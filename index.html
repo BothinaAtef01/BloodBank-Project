@@ -256,5 +256,137 @@
         </div>
            
     </section>
+    <div class="container">
+
+  <!-- Left: Floating Heart -->
+  <div class="heart-side">
+
+    <!-- Badge: Safe & Secure -->
+    <div class="badge badge-secure">
+      <div class="badge-icon" style="background:#e8faf2;">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <path d="M10 2L16 5v5c0 3.5-2.5 6-6 7-3.5-1-6-3.5-6-7V5l6-3z" stroke="#2daa6b" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M7 10l2 2 4-4" stroke="#2daa6b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="badge-label">Safe &amp; Secure</div>
+        <div class="badge-value">100% Verified</div>
+      </div>
+    </div>
+
+    <!-- Blob + Heart SVG -->
+    <svg class="blob-wrap" width="500" height="520" viewBox="0 0 400 430" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="200" cy="215" rx="155" ry="165" fill="#E8453C" opacity="0.13"/>
+      <path
+        d="M200 72 C242 68,294 86,322 120 C354 160,358 212,344 254 C330 296,296 332,256 350 C226 364,192 366,160 354 C124 340,92 314,72 280 C50 244,46 198,58 158 C72 114,110 80,150 70 C167 65,184 65,200 72Z"
+        fill="#E8453C"
+      />
+      <g class="heart-inner">
+        <path
+          d="M200 252 C200 252,152 220,152 190 C152 172,166 160,179 160 C189 160,197 167,200 173 C203 167,211 160,221 160 C234 160,248 172,248 190 C248 220,200 252,200 252Z"
+          fill="none"
+          stroke="white"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </g>
+    </svg>
+
+    <!-- Badge: Live Tracking -->
+    <div class="badge badge-live">
+      <div class="badge-icon" style="background:#dce8fc;">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+          <polyline points="2,10 5,7 8,13 11,5 14,10 18,10" stroke="#3a78d4" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="badge-label">Live Tracking</div>
+        <div class="badge-value">Real-time Updates</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right: FAQ -->
+  <div class="faq-side">
+    <p class="faq-tag">FAQ</p>
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <p class="faq-subtitle">Everything you need to know about the donation process.</p>
+
+    <div class="faq-list" id="faq-list"></div>
+  </div>
+
+</div>
+
+<script>
+  const faqs = [
+    {
+      q: "Who can donate blood?",
+      a: "Most healthy adults aged 17 and older who weigh at least 110 lbs can donate. Some conditions may affect eligibility."
+    },
+    {
+      q: "How often can I donate?",
+      a: "Whole blood donors can give every 56 days. Platelet donors can give every 7 days, up to 24 times per year."
+    },
+    {
+      q: "Does donating blood hurt?",
+      a: "You may feel a brief pinch when the needle is inserted, but the process is generally painless and takes about 10 minutes."
+    },
+    {
+      q: "How do I prepare for donation?",
+      a: "Drink plenty of water, eat a healthy meal, and get a good night's sleep before your appointment."
+    },
+    {
+      q: "What happens to my blood after donation?",
+      a: "Your donation is tested, processed into components, and distributed to hospitals where it can help up to 3 patients."
+    }
+  ];
+
+  const list = document.getElementById('faq-list');
+  let current = null;
+
+  faqs.forEach((faq, i) => {
+    const item = document.createElement('div');
+    item.className = 'faq-item';
+
+    item.innerHTML = `
+      <button class="faq-btn" id="btn-${i}" onclick="toggle(${i})">
+        <span class="faq-q">${faq.q}</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <div class="faq-body" id="body-${i}">
+        <p class="faq-a">${faq.a}</p>
+      </div>
+    `;
+
+    list.appendChild(item);
+  });
+
+  function toggle(i) {
+    const btn = document.getElementById('btn-' + i);
+    const body = document.getElementById('body-' + i);
+
+    if (current === i) {
+      btn.classList.remove('active');
+      body.classList.remove('open');
+      current = null;
+      return;
+    }
+
+    if (current !== null) {
+      document.getElementById('btn-' + current).classList.remove('active');
+      document.getElementById('body-' + current).classList.remove('open');
+    }
+
+    btn.classList.add('active');
+    body.classList.add('open');
+    current = i;
+  }
+</script>
 
 </body>    
+</html>

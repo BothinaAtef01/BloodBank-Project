@@ -116,7 +116,7 @@ if (str_starts_with($uri, '/staff')) {
 
 // ── Admin routes ──────────────────────────────────────────────────────────────
 if (str_starts_with($uri, '/admin')) {
-    require_once __DIR__ . '/controllers/admin.controller.php';
+    require_once __DIR__ . '/controllers/admin.php';
     $user = authenticate();
     authorize(['admin'], $user);
 

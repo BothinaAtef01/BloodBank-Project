@@ -1,0 +1,25 @@
+<?php 
+//يعمل رمز عشوائي
+function generateToken(): string {
+    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/I/1 ambiguity
+    $token = '';
+    for ($i = 0; $i < 8; $i++) {
+        $token .= $chars[random_int(0, strlen($chars) - 1)];
+    }
+    return $token;
+}
+
+//حساب وقت انهاء صلاحية الرمز
+function tokenExpiresAt(): string {
+    $hours = (int) ($_ENV['TOKEN_EXPIRY_HOURS'] ?? 24);
+    return date('Y-m-d H:i:s', time() + $hours * 3600);
+}
+
+//الفتره اللي يقدر يتبرع تاني بعدها
+function nextEligibleDate(string $donationDate): string {
+    $days = 56;
+    return date('Y-m-d', strtotime($donationDate . " +{$days} days"));
+}
+
+
+?>

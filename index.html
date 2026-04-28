@@ -1,262 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sanguis - National Blood Bank</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DropLink — Blood Management System</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 </head>
 <body>
-    <!-- NAV -->
-    <nav class="nav-container">
-        <a href="#" class="logo">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21.5C12 21.5 4 14.5 4 9C4 4.5 7.5 2 10.5 2C12 2 13.5 3 14 4C14.5 3 16 2 17.5 2C20.5 2 24 4.5 24 9C24 14.5 16 21.5 16 21.5C16 21.5 14 23 12 23C10 23 8 21.5 8 21.5L12 21.5Z" clip-rule="evenodd" fill-rule="evenodd"/>
-            </svg>
-            Sanguis
-        </a>
-        <div class="nav-links">
-            <a href="#types">Donation Types</a>
-            <a href="#eligibility">Eligibility</a>
-            <a href="#locations">Locations</a>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo" href="#">
+        <img src="Logo.svg" alt="Droplink" style="height: 36px; width: auto;">
+      </div>
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#tests">Blood Tests</a></li>
+        <li><a href="#map">Find Centers</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-buttons">
+        <button class="nav-login">Login</button>
+        <button class="nav-cta">Register</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SECTION 1: HERO -->
+  <section id="hero" class="hero">
+    <div class="hero-bg-blob blob1"></div>
+    <div class="hero-bg-blob blob2"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <span class="hero-eyebrow">National Blood Management System</span>
+        <h1 class="hero-title">Every Drop<br/><em>Saves Lives.</em></h1>
+        <p class="hero-sub">A unified platform connecting donors, hospitals, and blood banks — making critical blood supply management faster, smarter, and life-saving.</p>
+        <div class="hero-actions">
+          <button class="btn-primary">Find a Center →</button>
+          <button class="btn-outline">Learn More</button>
         </div>
-        <a href="#book" class="btn btn-primary">Book Appointment</a>
-    </nav>
+      </div>
 
-    <!-- HERO -->
-    <header class="container hero">
-        <div class="hero-content">
-            <div class="urgency-badge">
-                <div class="pulse-dot"></div>
-                Urgent Need: Type O Blood
-            </div>
-            <h1 class="hero-title">Your blood is <span>vital.</span></h1>
-            <p class="hero-desc">Every two seconds, someone in the US needs blood. A single donation can save up to three lives. Join our network of donors and make a profound impact today.</p>
+      <div class="hero-visual">
+        <div class="blood-bag-wrap">
+          <svg class="blood-bag-svg" viewBox="0 0 260 370" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bagGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#2A0A12" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#1A0608" stop-opacity="0.15"/>
+              </linearGradient>
+              <linearGradient id="bloodGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#E8344A"/>
+                <stop offset="100%" stop-color="#8B0D1A"/>
+              </linearGradient>
+              <linearGradient id="shineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
+                <stop offset="50%" stop-color="rgba(255,255,255,0.04)"/>
+                <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+              </linearGradient>
+              <clipPath id="bagClip">
+                <rect x="48" y="70" width="164" height="200" rx="30"/>
+              </clipPath>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="4" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
 
-            <div class="avatar-cluster">
-                <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80')"></div>
-                <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=100&q=80')"></div>
-                <div class="avatar" style="background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80')"></div>
-                <div class="avatar-text">Join <strong>12,408</strong> donors this month</div>
-            </div>
+            <g class="bag-group">
+              <!-- Hanger / hook -->
+              <path d="M130 12 L130 30" stroke="#C0172B" stroke-width="3" stroke-linecap="round"/>
+              <path d="M105 30 Q105 18 130 18 Q155 18 155 30" fill="none" stroke="#C0172B" stroke-width="3" stroke-linecap="round"/>
 
-            <div class="hero-actions">
-                <a href="#" class="btn btn-primary">Find a Center</a>
-                <a href="#" class="btn btn-secondary">Am I Eligible?</a>
+              <!-- Tube going into bag top -->
+              <path d="M115 70 L115 52 Q115 40 128 40 L132 40" stroke="#C0172B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <path d="M145 70 L145 52 Q145 40 132 40" stroke="#8B0D1A" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+              <!-- Bag body outline -->
+              <rect x="48" y="70" width="164" height="200" rx="30"
+                    fill="url(#bagGrad)"
+                    stroke="rgba(192,23,43,0.2)" stroke-width="1.5"/>
+
+              <!-- Blood fill with wave (clipped) -->
+              <g clip-path="url(#bagClip)">
+                <rect x="48" y="155" width="164" height="115" fill="url(#bloodGrad)" opacity="0.9"/>
+                <path class="blood-wave"
+                  d="M48 155 Q90 143 130 155 Q170 167 212 155 L212 270 L48 270 Z"
+                  fill="url(#bloodGrad)"/>
+                <ellipse cx="100" cy="200" rx="20" ry="35" fill="rgba(232,52,74,0.3)"/>
+              </g>
+
+              <!-- Shine overlay -->
+              <rect x="48" y="70" width="80" height="500"
+                    rx="30" fill="url(#shineGrad)" clip-path="url(#bagClip)"/>
+
+              <!-- Label on bag -->
+              <rect x="72" y="85" width="116" height="56" rx="8" fill="white"/>
+              <text x="130" y="106" text-anchor="middle" fill="black"
+                    font-family="'DM Sans', sans-serif" font-size="8" font-weight="600" letter-spacing="0.12em">BLOOD BANK</text>
+              <text x="130" y="120" text-anchor="middle" fill="darkred"
+                    font-family="'Playfair Display', serif" font-size="13" font-weight="700">O⁺</text>
+              <text x="130" y="133" text-anchor="middle" fill="black"
+                    font-family="'DM Sans', sans-serif" font-size="7">450 mL • Expires 2026-07-12</text>
+
+              <line x1="58" y1="170" x2="68" y2="170" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <line x1="58" y1="190" x2="68" y2="190" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <line x1="58" y1="210" x2="68" y2="210" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <line x1="58" y1="230" x2="68" y2="230" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <text x="71" y="173" fill="rgba(255,255,255,0.2)" font-size="6" font-family="'DM Sans', sans-serif">75%</text>
+              <text x="71" y="233" fill="rgba(255,255,255,0.2)" font-size="6" font-family="'DM Sans', sans-serif">25%</text>
+              <rect x="120" y="270" width="20" height="16" rx="4" fill="#5A0C15"/>
+              <line x1="130" y1="286" x2="130" y2="310" stroke="#8B0D1A" stroke-width="4" stroke-linecap="round"/>
+              <line x1="130" y1="286" x2="130" y2="310" stroke="#C0172B" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Drip drops -->
+              <ellipse class="drop1" cx="130" cy="316" rx="4" ry="5.5" fill="#C0172B" filter="url(#glow)"/>
+              <ellipse class="drop2" cx="130" cy="316" rx="4" ry="5.5" fill="#E8344A" filter="url(#glow)"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-value">
+          <span class="stat-num" data-target="120">0</span><span class="stat-unit">K+</span>
+        </div>
+        <span class="stat-label">Donors Registered</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">
+          <span class="stat-num" data-target="340">0</span><span class="stat-unit">+</span>
+        </div>
+        <span class="stat-label">Partner Hospitals</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">
+          <span class="stat-num" data-target="58">0</span><span class="stat-unit">K+</span>
+        </div>
+        <span class="stat-label">Lives Saved</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-value">
+          <span class="stat-num" data-target="24">0</span><span class="stat-unit">/7</span>
+        </div>
+        <span class="stat-label">Emergency Access</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: BLOOD TYPES -->
+  <section id="tests">
+    <div class="section-header">
+      <span class="section-label">Ways to Give</span>
+      <h2 class="section-title">Choose your donation type</h2>
+      <p class="section-sub">Different patients need different components. Every type of donation is critical to saving lives.</p>
+    </div>
+
+    <div class="types-grid">
+
+      <!-- Whole Blood -->
+      <div class="type-card">
+        <div class="type-name">Whole Blood</div>
+        <p class="type-desc">The most common type of donation. It can be transfused in its original form or used to help multiple people when separated into its specific components.</p>
+        <ul class="type-meta">
+          <li class="type-meta-row">
+            <span class="type-meta-label">Ideal For</span>
+            <span class="type-meta-val">Trauma patients, surgery</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Time Needed</span>
+            <span class="type-meta-val">About 45–60 minutes</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Frequency</span>
+            <span class="type-meta-val">Every 56 days</span>
+          </li>
+        </ul>
+        <a href="#" class="type-learn-btn">Learn Eligibility <span>↗</span></a>
+        <div class="type-watermark">
+          <svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="rgba(192,23,43,0.08)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0C19 10 12 2 12 2z"/></svg>
+        </div>
+      </div>
+
+      <!-- Plasma -->
+      <div class="type-card">
+        <div class="type-name">Plasma (AB Elite)</div>
+        <p class="type-desc">Plasma is the liquid portion of your blood. AB type plasma is universal and can be given to patients of any blood type in emergencies.</p>
+        <ul class="type-meta">
+          <li class="type-meta-row">
+            <span class="type-meta-label">Ideal For</span>
+            <span class="type-meta-val">Burn victims, shock, trauma</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Time Needed</span>
+            <span class="type-meta-val">About 1 hour 15 minutes</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Frequency</span>
+            <span class="type-meta-val">Every 28 days</span>
+          </li>
+        </ul>
+        <a href="#" class="type-learn-btn">Learn Eligibility <span>↗</span></a>
+        <div class="type-watermark">
+          <svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="rgba(192,23,43,0.08)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        </div>
+      </div>
+
+      <!-- Platelets -->
+      <div class="type-card">
+        <div class="type-name">Platelets</div>
+        <p class="type-desc">Platelets are tiny cells in your blood that form clots and stop bleeding. They are essential for patients surviving cancer or major surgeries.</p>
+        <ul class="type-meta">
+          <li class="type-meta-row">
+            <span class="type-meta-label">Ideal For</span>
+            <span class="type-meta-val">Cancer patients, transplants</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Time Needed</span>
+            <span class="type-meta-val">About 2.5 – 3 hours</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Frequency</span>
+            <span class="type-meta-val">Every 7 days (up to 24x/yr)</span>
+          </li>
+        </ul>
+        <a href="#" class="type-learn-btn">Learn Eligibility <span>↗</span></a>
+        <div class="type-watermark">
+          <svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="rgba(192,23,43,0.08)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        </div>
+      </div>
+
+      <!-- Double Red Cells -->
+      <div class="type-card">
+        <div class="type-name">Double Red Cells</div>
+        <p class="type-desc">Twice the red blood cells are collected using apheresis technology. Ideal for patients with severe anemia, sickle cell disease, or trauma.</p>
+        <ul class="type-meta">
+          <li class="type-meta-row">
+            <span class="type-meta-label">Ideal For</span>
+            <span class="type-meta-val">Anemia, sickle cell, trauma</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Time Needed</span>
+            <span class="type-meta-val">About 30 minutes</span>
+          </li>
+          <li class="type-meta-row">
+            <span class="type-meta-label">Frequency</span>
+            <span class="type-meta-val">Every 112 days</span>
+          </li>
+        </ul>
+        <a href="#" class="type-learn-btn">Learn Eligibility <span>↗</span></a>
+        <div class="type-watermark">
+          <svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="rgba(192,23,43,0.08)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="6"/><path d="M2 12c0 4 4.5 8 10 8s10-4 10-8"/></svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3: MAP -->
+  <section id="map">
+    <div class="section-header">
+      <h2 class="section-title">Find Nearest Branches</h2>
+      <p class="section-sub">Locate a blood bank near you and check their current status.</p>
+    </div>
+    <div class="locations-wrap">
+      <!-- LEFT: search + list -->
+      <div class="loc-panel">
+        <div class="loc-search-row">
+          <span class="loc-search-icon">🔍</span>
+          <input class="loc-search" type="text" placeholder="Search city or area..." oninput="filterBranches(this.value)">
+        </div>
+        <div class="loc-filters">
+          <button class="loc-filter-btn active" onclick="setFilter('all', this)">All</button>
+          <button class="loc-filter-btn" onclick="setFilter('open', this)">Open</button>
+          <button class="loc-filter-btn" onclick="setFilter('critical', this)">Critical Need</button>
+        </div>
+        <div class="location-list" id="branch-list">
+
+          <div class="loc-card active" data-status="busy" data-lat="30.0917" data-lng="31.3356" onclick="selectLoc(this, 30.0917, 31.3356)">
+            <div class="loc-card-top">
+              <div class="loc-name">Heliopolis Blood Center</div>
+              <span class="loc-badge busy">Busy</span>
             </div>
+            <div class="loc-detail">
+              <div class="loc-detail-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                89 El-Merghany St, Heliopolis
+              </div>
+            </div>
+            <div class="loc-bottom">
+              <span class="loc-distance">8.3 km away</span>
+              <span class="loc-view">View Details</span>
+            </div>
+          </div>
+
+          <div class="loc-card" data-status="open" data-lat="29.9602" data-lng="31.2569" onclick="selectLoc(this, 29.9602, 31.2569)">
+            <div class="loc-card-top">
+              <div class="loc-name">Maadi Medical Center</div>
+              <span class="loc-badge open">Open</span>
+            </div>
+            <div class="loc-detail">
+              <div class="loc-detail-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Road 9, Maadi, Cairo
+              </div>
+            </div>
+            <div class="loc-bottom">
+              <span class="loc-distance">12.5 km away</span>
+              <span class="loc-view">View Details</span>
+            </div>
+          </div>
+
+          <div class="loc-card" data-status="open" data-lat="31.2001" data-lng="29.9187" onclick="selectLoc(this, 31.2001, 29.9187)">
+            <div class="loc-card-top">
+              <div class="loc-name">Alexandria Blood Bank</div>
+              <span class="loc-badge open">Open</span>
+            </div>
+            <div class="loc-detail">
+              <div class="loc-detail-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Corniche Rd, Alexandria
+              </div>
+            </div>
+            <div class="loc-bottom">
+              <span class="loc-distance">215 km away</span>
+              <span class="loc-view">View Details</span>
+            </div>
+          </div>
+
+          <div class="loc-card" data-status="critical" data-lat="30.0561" data-lng="31.2132" onclick="selectLoc(this, 30.0561, 31.2132)">
+            <div class="loc-card-top">
+              <div class="loc-name">Giza Regional Center</div>
+              <span class="loc-badge critical">Critical Need</span>
+            </div>
+            <div class="loc-detail">
+              <div class="loc-detail-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Dokki, Giza
+              </div>
+            </div>
+            <div class="loc-bottom">
+              <span class="loc-distance">18.2 km away</span>
+              <span class="loc-view">View Details</span>
+            </div>
+          </div>
+
+          <div class="loc-card" data-status="open" data-lat="25.6872" data-lng="32.6396" onclick="selectLoc(this, 25.6872, 32.6396)">
+            <div class="loc-card-top">
+              <div class="loc-name">Luxor Donation Hub</div>
+              <span class="loc-badge open">Open</span>
+            </div>
+            <div class="loc-detail">
+              <div class="loc-detail-row">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                East Luxor, Luxor
+              </div>
+            </div>
+            <div class="loc-bottom">
+              <span class="loc-distance">676 km away</span>
+              <span class="loc-view">View Details</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT: Leaflet Real Map -->
+      <div class="map-container">
+        <div id="leaflet-map"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: FAQ -->
+  <section id="faq" class="faq-section">
+    <div class="faq-visual">
+      <div class="faq-circle-big"></div>
+      <div class="faq-circle-small"></div>
+    </div>
+    <div class="faq-inner">
+      <div class="faq-header">
+        <span class="section-tag">Questions</span>
+        <h2>Frequently Asked</h2>
+        <p>Everything you need to know before your first donation.</p>
+      </div>
+      <div class="faq-list" id="faqList">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Who can donate blood?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Generally, donors must be at least 17 years old, weigh at least 110 lbs, and be in good health. Certain medical conditions or recent travel may temporarily defer you. Our system will guide you through a quick eligibility check before booking.</p>
+          </div>
         </div>
 
-        <div class="hero-visual">
-            <div class="visual-bg"></div>
-            <div class="blood-bag-container">
-                <div class="tube-line"></div>
-                <div class="tube-top"></div>
-                <div class="blood-bag">
-                    <div class="blood-liquid"></div>
-                    <div class="bag-highlight"></div>
-                    <div class="bag-label">
-                        <div>
-                            <div class="label-header">
-                                <span style="font-weight:600;color:var(--text-muted);font-size:12px;text-transform:uppercase;">Collection Unit</span>
-                                <span style="font-weight:700;color:var(--text-main);font-size:14px;">#894-B</span>
-                            </div>
-                            <div style="margin-top:16px;display:flex;align-items:baseline;gap:4px;">
-                                <div class="blood-type-display">O</div>
-                                <div class="rh-factor">Positive</div>
-                            </div>
-                            <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">
-                                VOL: 450mL ± 10%<br>
-                                Contains CPDA-1 Anticoagulant
-                            </div>
-                        </div>
-                        <div class="barcode"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="floating-stats">
-                <div class="stat-item">
-                    <span class="stat-value">3</span>
-                    <span class="stat-label">Lives Saved / Pint</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-value">45</span>
-                    <span class="stat-label">Min Process</span>
-                </div>
-            </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            How often can I donate whole blood?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Whole blood donors can give every 56 days (8 weeks). Platelet donors can give more frequently — up to 24 times per year. Plasma donors can give every 28 days. The HemaLink app tracks your donation schedule automatically.</p>
+          </div>
         </div>
-    </header>
-    <!-- DONATION TYPES -->
-    <section id="types" class="donation-types">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Ways to Give</span>
-                <h2 class="section-title">Choose your donation type</h2>
-            </div>
 
-            <div class="types-grid">
-                <!-- Whole Blood -->
-                <div class="type-card card-blood">
-                    <div class="card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-                    </div>
-                    <h3 class="type-title">Whole Blood</h3>
-                    <p class="type-desc">The most common type of donation. It provides red blood cells, white blood cells, and platelets. Crucial for trauma patients and surgery.</p>
-                    <div class="type-meta">
-                        <div class="meta-item">
-                            <span class="meta-label">Time required</span>
-                            <span class="meta-value">45-60 mins</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Frequency</span>
-                            <span class="meta-value">Every 56 days</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Best for</span>
-                            <span class="meta-value">All blood types</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Plasma -->
-                <div class="type-card card-plasma">
-                    <div class="card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
-                    </div>
-                    <h3 class="type-title">Plasma</h3>
-                    <p class="type-desc">The liquid portion of blood. Collected via an automated process that returns red cells to you. Vital for burn victims and chronic diseases.</p>
-                    <div class="type-meta">
-                        <div class="meta-item">
-                            <span class="meta-label">Time required</span>
-                            <span class="meta-value">1 hour 15 mins</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Frequency</span>
-                            <span class="meta-value">Every 28 days</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Best for</span>
-                            <span class="meta-value">AB positive/negative</span>
-                        </div>
-                    </div>
-                </div>
-        <!-- Platelets -->
-                <div class="type-card card-platelet">
-                    <div class="card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                    </div>
-                    <h3 class="type-title">Platelets</h3>
-                    <p class="type-desc">Tiny cells that help blood clot. Essential for cancer patients undergoing chemotherapy and those with life-threatening illnesses.</p>
-                    <div class="type-meta">
-                        <div class="meta-item">
-                            <span class="meta-label">Time required</span>
-                            <span class="meta-value">2-3 hours</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Frequency</span>
-                            <span class="meta-value">Every 7 days</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Best for</span>
-                            <span class="meta-value">A positive, B positive</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            How long does a donation take?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>The actual blood draw takes 8–10 minutes. Including registration, health history, and post-donation refreshments, plan for about 45–60 minutes for your first visit, and 30–45 minutes for subsequent visits.</p>
+          </div>
         </div>
-    </section>
 
-    <!-- LOCATIONS -->
-    <section id="locations" class="center-finder">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label" style="color: var(--blue-primary)">Locate Us</span>
-                <h2 class="section-title">Nearest Donation Centers</h2>
-            </div>
-
-            <div class="finder-grid">
-                <div class="locations-list">
-                    <div class="location-card active">
-                        <div class="loc-header">
-                            <span class="loc-name">Metro General Hospital</span>
-                            <span class="loc-distance">1.2 mi</span>
-                        </div>
-                        <div class="loc-address">450 Clinical Ave, Downtown</div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span class="status-badge status-urgent"><span class="dot"></span> Critical Need: O-</span>
-                            <a href="#" style="color:white;font-size:13px;font-weight:600;text-decoration:none;">Book &gt;</a>
-                        </div>
-                    </div>
-
-                    <div class="location-card">
-                        <div class="loc-header">
-                            <span class="loc-name">Westside Blood Center</span>
-                            <span class="loc-distance">3.5 mi</span>
-                        </div>
-                        <div class="loc-address">8900 Wellness Blvd, Westside</div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span class="status-badge status-stable"><span class="dot"></span> Normal Capacity</span>
-                            <a href="#" style="color:rgba(255,255,255,0.6);font-size:13px;text-decoration:none;">Book &gt;</a>
-                        </div>
-                    </div>
-                    <div class="location-card">
-                        <div class="loc-header">
-                            <span class="loc-name">North Park Mobile Drive</span>
-                            <span class="loc-distance">5.0 mi</span>
-                        </div>
-                        <div class="loc-address">Community Center Parking Lot</div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span class="status-badge status-urgent"><span class="dot"></span> High Need: Platelets</span>
-                            <a href="#" style="color:rgba(255,255,255,0.6);font-size:13px;text-decoration:none;">Book &gt;</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MAP -->
-                <div class="map-ui">
-                    <div class="map-grid-bg"></div>
-
-                    <div class="map-marker marker-urgent" style="top:40%;left:30%;">
-                        <div class="marker-pin"></div>
-                        <div class="marker-label">Metro Gen</div>
-                    </div>
-
-                    <div class="map-marker" style="top:60%;left:70%;">
-                        <div class="marker-pin"></div>
-                        <div class="marker-label">Westside</div>
-                    </div>
-
-                    <div class="map-marker marker-urgent" style="top:20%;left:60%;">
-                        <div class="marker-pin"></div>
-                        <div class="marker-label">North Park Drive</div>
-                    </div>
-
-                    <!-- You Are Here -->
-                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;">
-                        <div style="width:16px;height:16px;background:var(--blue-primary);border:3px solid white;border-radius:50%;box-shadow:0 0 20px var(--blue-primary);"></div>
-                        <div style="position:absolute;width:40px;height:40px;background:var(--blue-primary);border-radius:50%;opacity:0.2;animation:pulse 2s infinite;"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Is donating blood safe?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Absolutely. All equipment is sterile and used only once. You cannot contract any disease from donating blood. Our trained staff monitor you throughout the entire process to ensure your comfort and safety.</p>
+          </div>
         </div>
-    </section>
 
-    <!-- CTA -->
-    <section class="cta-section">
-        <div class="container">
-            <div class="cta-box">
-                <h2 class="section-title">Ready to save a life?</h2>
-                <p>Scheduling an appointment takes less than two minutes. Your contribution is critical to maintaining our community's blood supply.</p>
-                <a href="#" class="btn btn-white">Schedule Donation Now</a>
-            </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            How will I know my blood is tested?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Every donation is screened for infectious diseases and blood type before being released. You'll receive a notification through our system within 48–72 hours with your results. If any concern arises, a medical professional will contact you confidentially.</p>
+          </div>
         </div>
-           
-    </section>
 
-    
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Can I track my donated blood?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p>Yes! Our platform provides a donation journey tracker. You can see when your blood was tested, processed, and in many cases, when it was issued to a hospital — giving you a direct connection to the life you helped save.</p>
+          </div>
+        </div>
 
-</body>    
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="Logo.svg" alt="Droplink" style="height: 36px; width: auto;">
+        </div>
+        <p>The national blood management platform connecting donors, hospitals, and blood banks for a healthier tomorrow.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="Facebook">fa</a>
+          <a href="#" aria-label="Instagram">◎</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+        </div>
+      </div>
+      <div class="footer-links-group">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#">Donor Portal</a></li>
+          <li><a href="#">Hospital Access</a></li>
+          <li><a href="#">Blood Bank Dashboard</a></li>
+          <li><a href="#">API Integration</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-group">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Donation Guide</a></li>
+          <li><a href="#">Blood Types Explained</a></li>
+          <li><a href="#">Health Requirements</a></li>
+          <li><a href="#">Research & Reports</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-group">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">Emergency Hotline: 1-800-HEMA-911</a></li>
+          <li><a href="#">support@droplink.org</a></li>
+          <li><a href="#">Media Inquiries</a></li>
+          <li><a href="#">Partner with Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 DROPLINK Blood Management System. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Accessibility</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

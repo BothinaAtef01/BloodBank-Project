@@ -259,7 +259,7 @@
         <div class="page-actions">
           <button class="btn-outline">📅 Last 30 Days</button>
           <button class="btn-outline">⊟ All Branches</button>
-          <button class="btn-primary">⬇ Export Report</button>
+          <button class="btn-primary" style="margin-left:auto;">⬇ Export Report</button>
         </div>
       </div>
 
@@ -343,13 +343,11 @@
 
     <!-- BRANCHES PAGE -->
     <div class="page" id="page-branches">
-      <div class="page-header">
+      <div class="page-header" style="justify-content: space-between; margin-bottom: 20px;">
+        <h2 style="font-size:1.1rem; font-weight:700;">Branch Network</h2>
         <button class="btn-primary" onclick="openModal('addBranchModal')">+ New Branch</button>
       </div>
-      <div class="card">
-        <h2 style="margin-bottom:20px;">Branch Network</h2>
-        <div class="branches-grid" id="branchesGrid"></div>
-      </div>
+      <div class="branches-grid" id="branchesGrid"></div>
     </div>
 
     <!-- INVENTORY PAGE -->
@@ -364,10 +362,10 @@
           <div class="filter-group">
             <div class="filters" id="filters"></div>
             <div class="divider"></div>
-            <button class="btn outline">
-              <span class="hide-sm">Export</span>
+            <button class="btn-outline">
+              <span class="hide-sm">⬇ Export</span>
             </button>
-            <button class="btn-primary" onclick="openModal('')">+ Add Account</button>
+            <button class="btn-primary" onclick="openModal('addInventoryModal')">+ Add Unit</button>
           </div>
           </div>
           
@@ -606,6 +604,42 @@
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('addBranchModal')">Cancel</button>
       <button class="btn-primary" onclick="addBranch()">Add Branch</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addInventoryModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Add Blood Unit</h2>
+      <button class="modal-close" onclick="closeModal('addInventoryModal')">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Unit ID</label>
+        <input type="text" class="form-input" placeholder="e.g. DON-9999" id="newUnitId" />
+      </div>
+      <div class="form-group">
+        <label>Blood Type</label>
+        <select class="form-input" id="newUnitBlood">
+          <option>O+</option><option>O-</option><option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option><option>AB+</option><option>AB-</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Volume</label>
+        <input type="text" class="form-input" placeholder="e.g. 450 mL" id="newUnitVol" />
+      </div>
+      <div class="form-group">
+        <label>Branch</label>
+        <select class="form-input" id="newUnitBranch">
+          <option>Cairo Main</option><option>Alex Central</option><option>Sidi Gaber</option><option>Giza Branch</option><option>Doke Clinic</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('addInventoryModal')">Cancel</button>
+      <button class="btn-primary" onclick="addInventoryUnit()">Add Unit</button>
     </div>
   </div>
 </div>

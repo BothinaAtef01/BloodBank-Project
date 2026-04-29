@@ -125,10 +125,36 @@ function navigateTo(page) {
 
 // ─── RENDER RECENT DONATIONS TABLE ───────────────────────────────────────
 
-function renderRecentDonations() {
+function actionMenu(type, id) {
+  return `
+    <div class="action-wrap">
+      <button class="action-dots" onclick="toggleActionMenu(this)">⋮</button>
+      <div class="action-menu">
+        <button class="action-menu-item" onclick="actionView('${type}','${id}')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/></svg>
+          View
+        </button>
+        <button class="action-menu-item" onclick="actionEdit('${type}','${id}')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="action-menu-item" onclick="actionExport('${type}','${id}')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <button class="action-menu-item danger" onclick="actionDelete('${type}','${id}')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Delete
+        </button>
+      </div>
+    </div>`;
+}
+
+function renderRecentDonations(list) {
   const tbody = document.getElementById('recentDonations');
   if (!tbody) return;
-  tbody.innerHTML = state.donations.slice(0, 8).map(d => `
+  const data = list !== undefined ? list : state.donations.slice(0, 8);
+  tbody.innerHTML = data.slice(0, 8).map(d => `
     <tr>
       <td>${d.id}</td>
       <td>${d.branch}</td>
@@ -136,7 +162,7 @@ function renderRecentDonations() {
       <td>${d.blood}</td>
       <td>${d.vol}</td>
       <td>${d.date}</td>
-      <td><span class="action-dots">···</span></td>
+      <td>${actionMenu('donation', d.id)}</td>
     </tr>
   `).join('');
 }
@@ -166,7 +192,7 @@ function renderAccounts(filter = '') {
       <td>${a.branch}</td>
       <td>${badge(a.status)}</td>
       <td>${a.lastLogin}</td>
-      <td><span class="action-dots">···</span></td>
+      <td>${actionMenu('account', a.email)}</td>
     </tr>
   `).join('');
 }
@@ -177,17 +203,40 @@ function filterAccounts(val) {
 
 // ─── RENDER BRANCHES ──────────────────────────────────────────────────────
 
-function renderBranches() {
+function renderBranches(list) {
   const grid = document.getElementById('branchesGrid');
   if (!grid) return;
 
-  grid.innerHTML = state.branches.map(b => {
+  const branches = list || state.branches;
+
+  grid.innerHTML = branches.map((b, idx) => {
     const capClass = b.capacity < 40 ? 'critical' : b.capacity < 60 ? 'warning' : '';
+    const branchId = b.name;
     return `
       <div class="branch-card">
         <div class="branch-card-header">
           <h3>${b.name}</h3>
-          <span class="branch-dots">⋮</span>
+          <div class="action-wrap">
+            <button class="action-dots" onclick="toggleActionMenu(this)">⋮</button>
+            <div class="action-menu">
+              <button class="action-menu-item" onclick="actionView('branch','${branchId}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/></svg>
+                View
+              </button>
+              <button class="action-menu-item" onclick="actionEdit('branch','${branchId}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </button>
+              <button class="action-menu-item" onclick="actionExport('branch','${branchId}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+              </button>
+              <button class="action-menu-item danger" onclick="actionDeleteBranch('${branchId}')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
         <div class="branch-location">📍 ${b.location}</div>
         <div class="capacity-bar">
@@ -206,7 +255,7 @@ function renderBranches() {
         </div>
         <div class="branch-card-footer">
           ${badge(b.status)}
-          <a href="#" class="crimson-link">View Details</a>
+          <a href="#" class="crimson-link" onclick="actionView('branch','${branchId}'); return false;">View Details</a>
         </div>
       </div>
     `;
@@ -232,43 +281,48 @@ function renderBloodTypeCards() {
   }).join('');
 }
 
+let selectedBloodType = null;
+
 function renderInventoryTable(filter = '') {
   const tbody = document.getElementById('inventoryTable');
   if (!tbody) return;
 
   const searchVal = (document.getElementById('inventorySearch')?.value || filter).toLowerCase();
-  const bloodFilter = document.getElementById('bloodTypeFilter')?.value || '';
   const statusFilter = document.getElementById('statusFilter')?.value || '';
 
   const filtered = state.donations.filter(d => {
     const matchSearch = !searchVal || d.id.toLowerCase().includes(searchVal);
-    const matchBlood  = !bloodFilter || d.blood === bloodFilter;
+    const matchBlood  = !selectedBloodType || d.blood === selectedBloodType;
     const matchStatus = !statusFilter || d.status === statusFilter;
     return matchSearch && matchBlood && matchStatus;
   });
 
   const bloodTypes = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
-let selectedType = null;
 
 const container = document.getElementById("filters");
 
 function renderFilters() {
+  if (!container) return;
   container.innerHTML = "";
+
+  // "All" button
+  const allBtn = document.createElement("button");
+  allBtn.className = "filter-btn" + (selectedBloodType === null ? " active" : "");
+  allBtn.textContent = "All";
+  allBtn.onclick = () => {
+    selectedBloodType = null;
+    renderInventoryTable();
+  };
+  container.appendChild(allBtn);
 
   bloodTypes.forEach(type => {
     const btn = document.createElement("button");
-    btn.className = "filter-btn";
+    btn.className = "filter-btn" + (selectedBloodType === type ? " active" : "");
     btn.textContent = type;
-
-    if (selectedType === type) {
-      btn.classList.add("active");
-    }
-
     btn.onclick = () => {
-      selectedType = type;
-      renderFilters();
+      selectedBloodType = type;
+      renderInventoryTable();
     };
-
     container.appendChild(btn);
   });
 }
@@ -283,7 +337,7 @@ renderFilters();
       <td>${badge(d.status)}</td>
       <td>${d.branch}</td>
       <td>${d.date}</td>
-      <td><span class="action-dots">···</span></td>
+      <td>${actionMenu('donation', d.id)}</td>
     </tr>
   `).join('');
 }
@@ -574,6 +628,29 @@ function addAccount() {
   document.getElementById('newAccountEmail').value = '';
 }
 
+// ─── ADD INVENTORY UNIT ───────────────────────────────────────────────────
+
+function addInventoryUnit() {
+  const id     = document.getElementById('newUnitId')?.value.trim();
+  const blood  = document.getElementById('newUnitBlood')?.value;
+  const vol    = document.getElementById('newUnitVol')?.value.trim() || '450 mL';
+  const branch = document.getElementById('newUnitBranch')?.value;
+
+  if (!id) { showToast('Please enter a Unit ID'); return; }
+
+  const today = new Date();
+  const dateStr = `${today.getMonth()+1}/${today.getDate()}/${today.getFullYear()}`;
+  state.donations.unshift({ id, branch, status: 'Under Testing', blood, vol, date: dateStr });
+
+  renderInventoryTable();
+  renderRecentDonations();
+  closeModal('addInventoryModal');
+  showToast(`Unit ${id} added successfully`);
+
+  document.getElementById('newUnitId').value = '';
+  document.getElementById('newUnitVol').value = '';
+}
+
 // ─── ADD BRANCH ───────────────────────────────────────────────────────────
 
 function addBranch() {
@@ -646,6 +723,69 @@ function restoreTheme() {
     document.documentElement.dataset.theme = 'dark';
     const dmToggle = document.getElementById('darkModeToggle');
     if (dmToggle) dmToggle.checked = true;
+  }
+}
+
+// ─── ACTION DROPDOWN LOGIC ────────────────────────────────────────────────
+
+function toggleActionMenu(btn) {
+  const menu = btn.nextElementSibling;
+  const isOpen = menu.classList.contains('open');
+  // Close all open menus first
+  document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+  if (!isOpen) menu.classList.add('open');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.action-wrap')) {
+    document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+function actionView(type, id) {
+  document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+  showToast(`Viewing ${type}: ${id}`);
+}
+
+function actionEdit(type, id) {
+  document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+  showToast(`Editing ${type}: ${id}`);
+}
+
+function actionExport(type, id) {
+  document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+  showToast(`Exporting ${type}: ${id}`);
+}
+
+function actionDelete(type, id) {
+  document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+  if (type === 'donation') {
+    const idx = state.donations.findIndex(d => d.id === id);
+    if (idx !== -1) {
+      state.donations.splice(idx, 1);
+      renderRecentDonations();
+      renderInventoryTable();
+      showToast(`Deleted donation ${id}`);
+    }
+  } else if (type === 'account') {
+    const idx = state.accounts.findIndex(a => a.email === id);
+    if (idx !== -1) {
+      const name = state.accounts[idx].name;
+      state.accounts.splice(idx, 1);
+      renderAccounts();
+      showToast(`Deleted account: ${name}`);
+    }
+  }
+}
+
+function actionDeleteBranch(name) {
+  document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+  const idx = state.branches.findIndex(b => b.name === name);
+  if (idx !== -1) {
+    state.branches.splice(idx, 1);
+    renderBranches();
+    showToast(`Deleted branch: ${name}`);
   }
 }
 

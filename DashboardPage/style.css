@@ -10,7 +10,7 @@
   --crimson: #9b1d42;
   --crimson-light: #c2275c;
   --crimson-bg: #fdf2f5;
-  --crimson-border: #f3c8d4;
+  --crimson-border: #f3c8d41d;
 
   --bg: #f7f8fa;
   --surface: #ffffff;
@@ -20,6 +20,7 @@
   --text-primary: #1a1a2e;
   --text-secondary: #4a4a6a;
   --text-muted: #9090a8;
+  --text-moreMuted: rgb(191, 189, 189);
 
   --border: #e8e8f0;
   --border-light: #f0f0f6;
@@ -241,13 +242,11 @@ a { text-decoration: none; color: inherit; }
     transition: background var(--transition), border-color var(--transition);
 }
 
-.tool-topbar{
-  display: flex;
-}
-
 #pageTitle{
   font-size: 34px;
+  font-family: 'Playfair Display';
 }
+
 .page-header {
   display: flex;
   align-items: center;
@@ -255,11 +254,16 @@ a { text-decoration: none; color: inherit; }
   flex-wrap: wrap;
   gap: 12px;
 }
+
+.tool-topbar{
+  display: flex;
+}
+
 .topbar-search {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg);
+  background: var(--bg-light);
   border: 1px solid var(--crimson-border);
   border-radius: var(--radius-sm);
   padding: 8px 16px;
@@ -284,7 +288,7 @@ a { text-decoration: none; color: inherit; }
   font-family: inherit;
 }
 
-.topbar-search input::placeholder { color: var(--text-muted); }
+.topbar-search input::placeholder { color: var(--text-moreMuted); }
 
 
 .search-icon {
@@ -298,7 +302,7 @@ a { text-decoration: none; color: inherit; }
 
 .search-kbd {
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: var(--crimson);
   background: rgb(241, 214, 210, 0.4);
   padding: 2px 6px;
   border-radius: 4px;
@@ -885,16 +889,16 @@ canvas { max-width: 100%; }
   transition: width 0.8s ease;
 }
 
-/* ─── ACCOUNTS TABLE ─── */
+
 .search-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg);
+  background: var(--sidebar-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 7px 12px;
-  color: var(--text-muted);
+  color: var(--text-);
 }
 
 .search-box input {
@@ -907,6 +911,7 @@ canvas { max-width: 100%; }
   font-family: inherit;
 }
 
+/* ─── ACCOUNTS TABLE ─── */
 .user-cell {
   display: flex;
   align-items: center;
@@ -940,6 +945,7 @@ canvas { max-width: 100%; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  
 }
 
 @media (max-width: 1100px) { .branches-grid { grid-template-columns: repeat(2, 1fr); } }

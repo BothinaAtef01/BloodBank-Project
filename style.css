@@ -1162,7 +1162,7 @@ img, svg {
 }
 
 .footer-legal a:hover {
-  color: var(--text-muted);
+  color: var(--red-bright);
 }
 
 /* ----------------------------------------------------------

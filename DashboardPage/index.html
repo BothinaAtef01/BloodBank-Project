@@ -251,15 +251,62 @@
           </div>
         </div>
       </div>
+
+      <!-- BLOOD INVENTORY LIVE -->
+      <div class="card db-blood-inventory-card">
+        <div class="card-header">
+          <div>
+            <h2>Blood Inventory — Live</h2>
+            <p class="db-blood-subtitle">8 blood types · Last updated just now</p>
+          </div>
+          <div class="db-blood-header-right">
+            <span class="db-critical-badge">2 Critical</span>
+            <a href="#" class="view-all-link" data-page="inventory">Full view →</a>
+          </div>
+        </div>
+        <div class="db-blood-grid" id="dbBloodGrid"></div>
+      </div>
+
+      <!-- URGENT REQUESTS + EXPIRY WATCH -->
+      <div class="db-bottom-grid">
+        <div class="card db-requests-card">
+          <div class="card-header">
+            <div>
+              <h2>Urgent Blood Requests</h2>
+              <p class="db-blood-subtitle">Requiring immediate action</p>
+            </div>
+            <div class="db-blood-header-right">
+              <span class="db-urgent-badge">3 urgent</span>
+              <a href="#" class="view-all-link" data-page="inventory">All requests →</a>
+            </div>
+          </div>
+          <table class="data-table db-requests-table">
+            <thead>
+              <tr>
+                <th>PATIENT</th><th>TYPE</th><th>HOSPITAL</th><th>UNITS</th><th>PRIORITY</th><th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="dbRequestsTable"></tbody>
+          </table>
+        </div>
+        <div class="card db-expiry-card">
+          <div class="card-header" style="flex-direction:column;align-items:flex-start;gap:2px;">
+            <h2>Expiry Watch</h2>
+            <p class="db-blood-subtitle" style="margin:0;">Next 7 days · 5 bags at risk</p>
+          </div>
+          <div class="db-expiry-list" id="dbExpiryList"></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- REPORTS PAGE -->
     <div class="page" id="page-reports">
       <div class="page-header">
         <div class="page-actions">
-          <button class="btn-outline">📅 Last 30 Days</button>
-          <button class="btn-outline">⊟ All Branches</button>
-          <button class="btn-primary" style="margin-left:auto;">⬇ Export Report</button>
+          <button class="btn-outline" id="reportDateBtn">📅 Last 30 Days</button>
+          <button class="btn-outline" id="reportBranchBtn">⊟ All Branches</button>
+          <button class="btn-primary" id="reportExportBtn" style="margin-left:auto;">⬇ Export Report</button>
         </div>
       </div>
 

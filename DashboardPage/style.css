@@ -365,6 +365,7 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* ─── CARDS ─── */
@@ -391,7 +392,6 @@ a { text-decoration: none; color: inherit; }
   border: none;
   border-radius: var(--radius-sm);
   padding: 9px 18px;
-  margin: 12px 12px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -495,15 +495,70 @@ a { text-decoration: none; color: inherit; }
 
 .data-table td:first-child { color: var(--text-primary); font-weight: 600; }
 
+/* ─── ACTION DROPDOWN ─── */
+.action-wrap {
+  position: relative;
+  display: inline-block;
+}
+
 .action-dots {
   cursor: pointer;
   color: var(--text-muted);
   font-size: 1.1rem;
   letter-spacing: 1px;
-  padding: 4px 8px;
-  border-radius: var(--radius-xs);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  line-height: 1;
+  font-weight: 700;
+  width: 34px;
+  height: 34px;
 }
-.action-dots:hover { background: var(--border-light); color: var(--text-primary); }
+.action-dots:hover { background: var(--border-light); color: var(--text-primary); border-color: var(--crimson-border); }
+
+.action-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background: var(--surface);
+  border: 1px solid var(--crimson-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 150;
+  min-width: 160px;
+  padding: 6px;
+  animation: fadeIn 0.15s ease;
+}
+
+.action-menu.open { display: block; }
+
+.action-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--transition);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.action-menu-item:hover { background: var(--border-light); }
+.action-menu-item.danger { color: #dc2626; }
+.action-menu-item.danger:hover { background: #fef2f2; }
+.action-menu-item svg { flex-shrink: 0; }
 
 /* ─── STATUS BADGES ─── */
 .badge {

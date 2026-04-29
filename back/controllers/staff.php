@@ -198,7 +198,7 @@ function staffAddDonation(array $user): void {
     ], 201);
 }
 
-// POST /api/staff/donations/:donationId/screening
+//يسجل نتيجه الفحص 
 function staffAddScreeningTest(array $user, int $donationId): void {
     $body = jsonBody();
 
@@ -233,20 +233,3 @@ function staffAddScreeningTest(array $user, int $donationId): void {
     jsonResponse(['success' => true, 'message' => 'Screening test results saved.']);
 }
 
-// GET /api/staff/my-permissions
-// function staffGetMyPermissions(array $user): void {
-//     $db   = getDB();
-//     $stmt = $db->prepare('
-//         SELECT sp.permission, sp.granted_at
-//         FROM staff_permissions sp
-//         JOIN staff_profiles stf ON stf.id = sp.staff_id
-//         WHERE stf.user_id = ? AND sp.is_active = 1
-//     ');
-//     $stmt->execute([$user['id']]);
-//     $rows = $stmt->fetchAll();
-
-//     jsonResponse([
-//         'success'     => true,
-//         'permissions' => array_column($rows, 'permission'),
-//     ]);
-// }

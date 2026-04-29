@@ -113,25 +113,25 @@ function donorGetTips(): void {
 }
 
 // 
-function donorUpdateProfile(array $user): void {
-    $body      = jsonBody();
-    $full_name = trim($body['full_name'] ?? '');
-    $latitude  = $body['latitude']  ?? null;
-    $longitude = $body['longitude'] ?? null;
+// function donorUpdateProfile(array $user): void {
+//     $body      = jsonBody();
+//     $full_name = trim($body['full_name'] ?? '');
+//     $latitude  = $body['latitude']  ?? null;
+//     $longitude = $body['longitude'] ?? null;
 
-    $db = getDB();
+//     $db = getDB();
 
-    if ($full_name) {
-        $db->prepare('UPDATE users SET full_name = ? WHERE id = ?')->execute([$full_name, $user['id']]);
-    }
+//     if ($full_name) {
+//         $db->prepare('UPDATE users SET full_name = ? WHERE id = ?')->execute([$full_name, $user['id']]);
+//     }
 
-    if ($latitude && $longitude) {
-        $db->prepare('UPDATE donor_profiles SET latitude = ?, longitude = ? WHERE user_id = ?')
-           ->execute([$latitude, $longitude, $user['id']]);
-    }
+//     if ($latitude && $longitude) {
+//         $db->prepare('UPDATE donor_profiles SET latitude = ?, longitude = ? WHERE user_id = ?')
+//            ->execute([$latitude, $longitude, $user['id']]);
+//     }
 
-    jsonResponse(['success' => true, 'message' => 'Profile updated.']);
-}
+//     jsonResponse(['success' => true, 'message' => 'Profile updated.']);
+// }
 
 // share
 function donorGetShareCard(array $user): void {

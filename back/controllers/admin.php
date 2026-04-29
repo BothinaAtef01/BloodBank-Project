@@ -92,34 +92,7 @@ function adminCreateStaffAccount(array $user): void {
     jsonResponse(['success' => true, 'message' => 'Staff account created successfully.', 'user_id' => $userId, 'staff_id' => $staffId], 201);
 }
 
-// POST /api/admin/accounts/admin
-// function adminCreateAdminAccount(array $user): void {
-//     $body = jsonBody();
-//     $db   = getDB();
 
-//     $my = $db->prepare('SELECT access_level FROM admin_profiles WHERE user_id = ?');
-//     $my->execute([$user['id']]);
-//     $myAdmin = $my->fetch();
-//     if (!$myAdmin || $myAdmin['access_level'] !== 'super') {
-//         jsonResponse(['success' => false, 'message' => 'Only super admins can create admin accounts.'], 403);
-//     }
-
-//     $hash = password_hash($body['password'], PASSWORD_BCRYPT, ['cost' => 12]);
-
-//     try {
-//         $db->beginTransaction();
-//         $db->prepare("INSERT INTO users (email, password_hash, role, full_name, phone) VALUES (?, ?, 'admin', ?, ?)")
-//            ->execute([$body['email'], $hash, $body['full_name'], $body['phone']]);
-//         $userId = (int) $db->lastInsertId();
-//         $db->prepare('INSERT INTO admin_profiles (user_id, access_level, managed_center_id) VALUES (?, ?, ?)')
-//            ->execute([$userId, $body['access_level'] ?? 'center', $body['managed_center_id'] ?? null]);
-//         $db->commit();
-//     } catch (Exception $e) {
-//         $db->rollBack(); throw $e;
-//     }
-
-//     jsonResponse(['success' => true, 'message' => 'Admin account created.', 'user_id' => $userId], 201);
-// }
 
 /////
 // function adminToggleAccount(array $user, int $targetId): void {
@@ -316,15 +289,4 @@ function adminGetBranches(): void {
         FROM blood_centers bc ORDER BY bc.name
     ')->fetchAll();
     jsonResponse(['success' => true, 'branches' => $rows]);
-}
-
-// اضافه فرع
-function adminCreateBranch(): void {
-    $body = jsonBody();
-    $db   = getDB();
-
-    $db->prepare('INSERT INTO blood_centers (name, address, city, latitude, longitude, phone, opening_hours) VALUES (?, ?, ?, ?, ?, ?, ?)')
-       ->execute([$body['name'], $body['address'], $body['city'], $body['latitude'], $body['longitude'], $body['phone'], json_encode($body['opening_hours'] ?? [])]);
-
-    jsonResponse(['success' => true, 'message' => 'Branch created.', 'center_id' => (int) $db->lastInsertId()], 201);
 }

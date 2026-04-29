@@ -10,6 +10,7 @@ function generateToken(): string {
 }
 
 //حساب وقت انهاء صلاحية الرمز
+$_ENV['TOKEN_EXPIRY_HOURS'] = 24;
 function tokenExpiresAt(): string {
     $hours = (int) ($_ENV['TOKEN_EXPIRY_HOURS'] ?? 24);
     return date('Y-m-d H:i:s', time() + $hours * 3600);

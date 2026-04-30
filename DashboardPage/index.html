@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeFlow — Blood Bank & Donation System</title>
+  <link rel="SHORTCUT ICON" href="/images/Logo.svg" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <img src="/images/Logo.svg">
+    </div>
+  </div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <span class="nav-label">CORE</span>
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="reports">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </a>
+      <a href="#" class="nav-item" data-page="alerts">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Alerts
+        <span class="nav-badge">4</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <span class="nav-label">MANAGEMENTS</span>
+      <a href="#" class="nav-item" data-page="accounts">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Accounts
+      </a>
+      <a href="#" class="nav-item" data-page="branches">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        Branches
+      </a>
+      <a href="#" class="nav-item" data-page="inventory">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Blood Inventory
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <span class="nav-label">PREFERENCE</span>
+      <a href="#" class="nav-item" data-page="help">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Help Center
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="#" class="nav-item logout-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+    <div class="user-chip">
+      <div class="user-avatar">AM</div>
+      <div class="user-info">
+        <span class="user-name">Alex Morgan</span>
+        <span class="user-role">Admin</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+  <!-- TOP BAR -->
+  <header class="topbar">
+      <h1 id="pageTitle">Dashboard Overview</h1> 
+
+      <div class="tool-topbar">
+        <div class="topbar-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="mainSearch" placeholder="search blood type, accou..." />
+        <span class="search-kbd">Ctrl+K</span>
+      </div>
+        <div class="divider"></div>
+      <div class="topbar-actions">
+        <button class="icon-btn notif-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn" id="themeToggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+      </div>
+      </div>
+  </header>
+
+  <!-- PAGES -->
+  <div class="page-container">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Donors</div>
+          <div class="stat-value crimson">1,248</div>
+          <div class="stat-change positive">↗ +12.5% <span>vs last month</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Units Available</div>
+          <div class="stat-value crimson">74,850</div>
+          <div class="stat-change positive">↗ +12.5% <span>vs last month</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Critical Shortage</div>
+          <div class="stat-value crimson">3 Types</div>
+          <div class="stat-change positive">↗ +12.5% <span>vs last month</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Donations (April)</div>
+          <div class="stat-value crimson">87</div>
+          <div class="stat-change positive">↗ +12.5% <span>vs last month</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Fulfillment Rate</div>
+          <div class="stat-value crimson">97.2%</div>
+          <div class="stat-change positive">↗ +0.8% <span>vs 2025</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Recent Donations</h2>
+          <a href="#" class="view-all-link">View All →</a>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>DONATION ID</th>
+              <th>BRANCH</th>
+              <th>STATUS</th>
+              <th>BLOOD TYPE</th>
+              <th>VOLUME</th>
+              <th>DATE</th>
+              <th>ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="recentDonations"></tbody>
+        </table>
+      </div>
+
+      <div class="two-col-grid">
+        <div class="card">
+          <div class="card-header"><h2>Urgent Alerts</h2><a href="#" class="view-all-link" data-page="alerts">View All</a></div>
+          <div class="alert-list">
+            <div class="alert-item alert-critical">
+              <div class="alert-icon">⚠</div>
+              <div>
+                <strong>Critical Shortage: AB-</strong>
+                <p>Inventory levels for AB- have fallen below the critical threshold (800 units remaining).</p>
+              </div>
+            </div>
+            <div class="alert-item alert-warning">
+              <div class="alert-icon">⚠</div>
+              <div>
+                <strong>Expiring Units</strong>
+                <p>300 units of O+ are set to expire in the next 48 hours. Prioritize fulfillment from this batch.</p>
+              </div>
+            </div>
+            <div class="alert-item alert-info">
+              <div class="alert-icon">ℹ</div>
+              <div>
+                <strong>New Branch Added</strong>
+                <p>Giza Central branch has been successfully onboarded and is now accepting donations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h2>Donation Flow Pipeline</h2></div>
+          <div class="pipeline">
+            <div class="pipeline-step">
+              <div class="pipeline-num dark">245</div>
+              <div class="pipeline-label">Collected</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-num orange">89</div>
+              <div class="pipeline-label">Testing</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-num green">156</div>
+              <div class="pipeline-label">Approved</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-num blue">42</div>
+              <div class="pipeline-label">Reserved</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-num purple">312</div>
+              <div class="pipeline-label">Fulfilled</div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">
+              <div class="pipeline-num red">12</div>
+              <div class="pipeline-label">Rejected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="three-col-grid">
+        <div class="insight-card">
+          <div class="insight-icon up">↗</div>
+          <div>
+            <div class="insight-label">Highest Donations</div>
+            <div class="insight-value">Cairo Main <span>(312 this month)</span></div>
+          </div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon down">↘</div>
+          <div>
+            <div class="insight-label">Lowest Stock</div>
+            <div class="insight-value">Doke Clinic <span>(30% capacity)</span></div>
+          </div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon clock">⏱</div>
+          <div>
+            <div class="insight-label">Slowest Approval</div>
+            <div class="insight-value">Giza Branch <span>(4.2 days avg)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOOD INVENTORY LIVE -->
+      <div class="card db-blood-inventory-card">
+        <div class="card-header">
+          <div>
+            <h2>Blood Inventory — Live</h2>
+            <p class="db-blood-subtitle">8 blood types · Last updated just now</p>
+          </div>
+          <div class="db-blood-header-right">
+            <span class="db-critical-badge">2 Critical</span>
+            <a href="#" class="view-all-link" data-page="inventory">Full view →</a>
+          </div>
+        </div>
+        <div class="db-blood-grid" id="dbBloodGrid"></div>
+      </div>
+
+      <!-- URGENT REQUESTS + EXPIRY WATCH -->
+      <div class="db-bottom-grid">
+        <div class="card db-requests-card">
+          <div class="card-header">
+            <div>
+              <h2>Urgent Blood Requests</h2>
+              <p class="db-blood-subtitle">Requiring immediate action</p>
+            </div>
+            <div class="db-blood-header-right">
+              <span class="db-urgent-badge">3 urgent</span>
+              <a href="#" class="view-all-link" data-page="inventory">All requests →</a>
+            </div>
+          </div>
+          <table class="data-table db-requests-table">
+            <thead>
+              <tr>
+                <th>PATIENT</th><th>TYPE</th><th>HOSPITAL</th><th>UNITS</th><th>PRIORITY</th><th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="dbRequestsTable"></tbody>
+          </table>
+        </div>
+        <div class="card db-expiry-card">
+          <div class="card-header" style="flex-direction:column;align-items:flex-start;gap:2px;">
+            <h2>Expiry Watch</h2>
+            <p class="db-blood-subtitle" style="margin:0;">Next 7 days · 5 bags at risk</p>
+          </div>
+          <div class="db-expiry-list" id="dbExpiryList"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- REPORTS PAGE -->
+    <div class="page" id="page-reports">
+      <div class="page-header">
+        <div class="page-actions">
+          <button class="btn-outline" id="reportDateBtn">📅 Last 30 Days</button>
+          <button class="btn-outline" id="reportBranchBtn">⊟ All Branches</button>
+          <button class="btn-primary" id="reportExportBtn" style="margin-left:auto;">⬇ Export Report</button>
+        </div>
+      </div>
+
+      <div class="two-col-grid">
+        <div class="card">
+          <h2>Blood Type Distribution</h2>
+          <p class="chart-subtitle">Current inventory breakdown by percentage</p>
+          <div class="bar-chart" id="bloodTypeChart"></div>
+          <div class="chart-labels">
+            <span>O+</span><span>A+</span><span>B+</span><span>AB+</span><span>O-</span><span>A-</span><span>B-</span><span>AB-</span>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Donation Trends</h2>
+          <p class="chart-subtitle">Daily collection volume over the last week</p>
+          <div class="line-chart-container">
+            <canvas id="donationTrends" width="400" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col-grid">
+        <div class="card">
+          <h2>Screening Results</h2>
+          <p class="chart-subtitle">Pass vs Rejection breakdown</p>
+          <div class="donut-container">
+            <canvas id="screeningDonut" width="240" height="240"></canvas>
+            <div class="donut-legend">
+              <div><span class="legend-dot crimson-dot"></span> Approved — 87%</div>
+              <div><span class="legend-dot gray-dot"></span> Rejected — 9%</div>
+              <div><span class="legend-dot pink-dot"></span> Pending — 4%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Branch Performance</h2>
+          <p class="chart-subtitle">Monthly donations per branch</p>
+          <div class="branch-perf">
+            <div class="branch-bar-row"><span>Cairo Main</span><div class="branch-bar-track"><div class="branch-bar-fill" style="width:92%"></div></div><span>312</span></div>
+            <div class="branch-bar-row"><span>Alex Central</span><div class="branch-bar-track"><div class="branch-bar-fill" style="width:72%"></div></div><span>245</span></div>
+            <div class="branch-bar-row"><span>Sidi Gaber</span><div class="branch-bar-track"><div class="branch-bar-fill" style="width:55%"></div></div><span>187</span></div>
+            <div class="branch-bar-row"><span>Giza Branch</span><div class="branch-bar-track"><div class="branch-bar-fill" style="width:40%"></div></div><span>136</span></div>
+            <div class="branch-bar-row"><span>Doke Clinic</span><div class="branch-bar-track"><div class="branch-bar-fill" style="width:28%"></div></div><span>94</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS PAGE -->
+    <div class="page" id="page-alerts">
+      <div class="card" style="max-width:760px;margin:0 auto;">
+        <div class="card-header">
+          <div>
+            <h2>System Alerts</h2>
+            <p style="color:var(--text-muted);font-size:13px;margin-top:2px;">Manage notifications and critical system warnings.</p>
+          </div>
+          <a href="#" class="crimson-link" id="markAllRead">Mark all as read</a>
+        </div>
+        <div class="full-alert-list" id="alertsList"></div>
+      </div>
+    </div>
+
+    <!-- ACCOUNTS PAGE -->
+    <div class="page" id="page-accounts">
+      <div class="card">
+        <div class="card-header">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search users..." id="accountSearch" oninput="filterAccounts(this.value)" />
+          </div>
+          <button class="btn-primary" onclick="openModal('addAccountModal')">+ Add Account</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>USER</th><th>ROLE</th><th>BRANCH</th><th>STATUS</th><th>LAST LOGIN</th><th>ACTION</th></tr>
+          </thead>
+          <tbody id="accountsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BRANCHES PAGE -->
+    <div class="page" id="page-branches">
+      <div class="page-header" style="justify-content: space-between; margin-bottom: 20px;">
+        <h2 style="font-size:1.1rem; font-weight:700;">Branch Network</h2>
+        <button class="btn-primary" onclick="openModal('addBranchModal')">+ New Branch</button>
+      </div>
+      <div class="branches-grid" id="branchesGrid"></div>
+    </div>
+
+    <!-- INVENTORY PAGE -->
+    <div class="page" id="page-inventory">
+      <div class="blood-type-cards" id="bloodTypeCards"></div>
+      <div class="card" style="margin-top:20px;">
+        <div class="card-header">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by Unit ID..." id="inventorySearch" oninput="filterInventory(this.value)" />
+          </div>
+          <div class="filter-group">
+            <div class="filters" id="filters"></div>
+            <div class="divider"></div>
+            <button class="btn-outline">
+              <span class="hide-sm">⬇ Export</span>
+            </button>
+            <button class="btn-primary" onclick="openModal('addInventoryModal')">+ Add Unit</button>
+          </div>
+          </div>
+          
+          <!-- <div class="filter-group">
+            <select class="filter-select" id="bloodTypeFilter" onchange="filterInventory()">
+              <option value="">Blood Type</option>
+              <option>O+</option><option>O-</option><option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option><option>AB+</option><option>AB-</option>
+            </select>
+            <select class="filter-select" id="statusFilter" onchange="filterInventory()">
+              <option value="">Status</option>
+              <option>Under Testing</option><option>Approved</option><option>Rejected</option>
+              <option>Expired</option><option>Reserved</option><option>Fulfilled</option>
+            </select>
+          </div>
+        </div> -->
+        <table class="data-table">
+          <thead>
+            <tr><th>UNIT ID</th><th>BLOOD TYPE</th><th>VOLUME</th><th>STATUS</th><th>BRANCH</th><th>COLLECTED</th><th>ACTION</th></tr>
+          </thead>
+          <tbody id="inventoryTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div class="page" id="page-settings">
+      <div class="settings-layout">
+        <div class="settings-sidebar">
+          <div class="settings-nav">
+            <button class="settings-tab active" data-tab="profile">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Profile
+            </button>
+            <button class="settings-tab" data-tab="security">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Security
+            </button>
+            <button class="settings-tab" data-tab="notifications">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              Notifications
+            </button>
+            <button class="settings-tab" data-tab="system">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              System
+            </button>
+          </div>
+        </div>
+        <div class="settings-content">
+          <div class="settings-panel active" id="tab-profile">
+            <div class="profile-card">
+              <div class="profile-avatar-wrap">
+                <div class="profile-avatar">AM</div>
+                <div class="profile-avatar-info">
+                  <strong>Alex Morgan</strong>
+                  <span>Admin · All Branches</span>
+                  <a href="#" class="crimson-link">Remove photo</a>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input type="text" class="form-input" value="Alex Morgan" />
+                </div>
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input type="email" class="form-input" value="alex@nexus.com" />
+                </div>
+                <div class="form-group">
+                  <label>Role</label>
+                  <input type="text" class="form-input" value="Admin" readonly />
+                </div>
+                <div class="form-group">
+                  <label>Branch</label>
+                  <input type="text" class="form-input" value="All Branches" readonly />
+                </div>
+              </div>
+              <div style="text-align:right;margin-top:20px;">
+                <button class="btn-primary">💾 Save Changes</button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-panel" id="tab-security">
+            <div class="profile-card">
+              <h3 style="margin-bottom:20px;">Security Settings</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Current Password</label>
+                  <input type="password" class="form-input" placeholder="Enter current password" />
+                </div>
+                <div class="form-group">
+                  <label>New Password</label>
+                  <input type="password" class="form-input" placeholder="Enter new password" />
+                </div>
+                <div class="form-group">
+                  <label>Confirm Password</label>
+                  <input type="password" class="form-input" placeholder="Confirm new password" />
+                </div>
+              </div>
+              <div style="text-align:right;margin-top:20px;">
+                <button class="btn-primary">Update Password</button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-panel" id="tab-notifications">
+            <div class="profile-card">
+              <h3 style="margin-bottom:20px;">Notification Preferences</h3>
+              <div class="notif-settings">
+                <div class="notif-row"><span>Critical shortage alerts</span><label class="toggle"><input type="checkbox" checked /><span class="slider"></span></label></div>
+                <div class="notif-row"><span>Expiring units alerts</span><label class="toggle"><input type="checkbox" checked /><span class="slider"></span></label></div>
+                <div class="notif-row"><span>New branch notifications</span><label class="toggle"><input type="checkbox" checked /><span class="slider"></span></label></div>
+                <div class="notif-row"><span>High rejection rate alerts</span><label class="toggle"><input type="checkbox" /><span class="slider"></span></label></div>
+                <div class="notif-row"><span>Weekly summary email</span><label class="toggle"><input type="checkbox" checked /><span class="slider"></span></label></div>
+              </div>
+            </div>
+          </div>
+          <div class="settings-panel" id="tab-system">
+            <div class="profile-card">
+              <h3 style="margin-bottom:20px;">System Preferences</h3>
+              <div class="notif-settings">
+                <div class="notif-row"><span>Dark Mode</span><label class="toggle"><input type="checkbox" id="darkModeToggle" /><span class="slider"></span></label></div>
+                <div class="notif-row"><span>Compact Table View</span><label class="toggle"><input type="checkbox" /><span class="slider"></span></label></div>
+                <div class="notif-row"><span>Auto-refresh Dashboard</span><label class="toggle"><input type="checkbox" checked /><span class="slider"></span></label></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HELP PAGE -->
+    <div class="page" id="page-help">
+      <div class="help-grid">
+        <div class="card help-card">
+          <div class="help-icon">📊</div>
+          <h3>Dashboard Guide</h3>
+          <p>Learn how to interpret dashboard metrics, KPIs, and donation flow pipelines.</p>
+          <a href="#" class="crimson-link">Read More →</a>
+        </div>
+        <div class="card help-card">
+          <div class="help-icon">🩸</div>
+          <h3>Blood Inventory Management</h3>
+          <p>How to track, filter, and manage blood units across all branches.</p>
+          <a href="#" class="crimson-link">Read More →</a>
+        </div>
+        <div class="card help-card">
+          <div class="help-icon">🏥</div>
+          <h3>Branch Operations</h3>
+          <p>Add new branches, manage capacity, and assign branch managers.</p>
+          <a href="#" class="crimson-link">Read More →</a>
+        </div>
+        <div class="card help-card">
+          <div class="help-icon">🔔</div>
+          <h3>Alert Configuration</h3>
+          <p>Set up critical shortage thresholds, expiry notifications, and more.</p>
+          <a href="#" class="crimson-link">Read More →</a>
+        </div>
+        <div class="card help-card">
+          <div class="help-icon">👥</div>
+          <h3>Account Management</h3>
+          <p>Create and manage staff accounts, roles, and branch assignments.</p>
+          <a href="#" class="crimson-link">Read More →</a>
+        </div>
+        <div class="card help-card">
+          <div class="help-icon">📤</div>
+          <h3>Exporting Reports</h3>
+          <p>How to export donation reports, screening summaries, and analytics.</p>
+          <a href="#" class="crimson-link">Read More →</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-container -->
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="addAccountModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Add New Account</h2>
+      <button class="modal-close" onclick="closeModal('addAccountModal')">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" class="form-input" placeholder="Enter full name" id="newAccountName" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" class="form-input" placeholder="email@nexus.com" id="newAccountEmail" />
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select class="form-input" id="newAccountRole">
+          <option>Staff</option><option>Lab Tech</option><option>Branch Manager</option><option>Admin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Branch</label>
+        <select class="form-input" id="newAccountBranch">
+          <option>Cairo Main</option><option>Alex Central</option><option>Sidi Gaber</option><option>Giza Branch</option><option>Doke Clinic</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('addAccountModal')">Cancel</button>
+      <button class="btn-primary" onclick="addAccount()">Add Account</button>
+    </div> 
+  </div>
+</div>
+
+<div class="modal-overlay" id="addBranchModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Add New Branch</h2>
+      <button class="modal-close" onclick="closeModal('addBranchModal')">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Branch Name</label>
+        <input type="text" class="form-input" placeholder="Branch name" id="newBranchName" />
+      </div>
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" class="form-input" placeholder="City / Area" id="newBranchLocation" />
+      </div>
+      <div class="form-group">
+        <label>Manager</label>
+        <input type="text" class="form-input" placeholder="Manager name" id="newBranchManager" />
+      </div>
+      <div class="form-group">
+        <label>Capacity (%)</label>
+        <input type="number" class="form-input" placeholder="0-100" min="0" max="100" id="newBranchCapacity" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('addBranchModal')">Cancel</button>
+      <button class="btn-primary" onclick="addBranch()">Add Branch</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addInventoryModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Add Blood Unit</h2>
+      <button class="modal-close" onclick="closeModal('addInventoryModal')">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Unit ID</label>
+        <input type="text" class="form-input" placeholder="e.g. DON-9999" id="newUnitId" />
+      </div>
+      <div class="form-group">
+        <label>Blood Type</label>
+        <select class="form-input" id="newUnitBlood">
+          <option>O+</option><option>O-</option><option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option><option>AB+</option><option>AB-</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Volume</label>
+        <input type="text" class="form-input" placeholder="e.g. 450 mL" id="newUnitVol" />
+      </div>
+      <div class="form-group">
+        <label>Branch</label>
+        <select class="form-input" id="newUnitBranch">
+          <option>Cairo Main</option><option>Alex Central</option><option>Sidi Gaber</option><option>Giza Branch</option><option>Doke Clinic</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('addInventoryModal')">Cancel</button>
+      <button class="btn-primary" onclick="addInventoryUnit()">Add Unit</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="index.js"></script>
+</body>
+</html>

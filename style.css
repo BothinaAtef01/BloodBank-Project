@@ -127,7 +127,7 @@ img, svg {
 }
 
 .section-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: clamp(1.9rem, 4vw, 2.9rem);
   font-weight: 900;
   color: var(--text-white);
@@ -501,7 +501,7 @@ img, svg {
 }
 
 .stat-unit {
-  font-family: 'Playfair Display', serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: clamp(1.2rem, 2vw, 1.6rem);
   font-weight: 700;
   color: #7A0D18;
@@ -571,7 +571,7 @@ img, svg {
 }
 
 .type-name {
-  font-family: 'Playfair Display', serif;
+ font-family: 'DM Sans', sans-serif;
   font-size: 1.35rem;
   font-weight: 800;
   color: #7A0D18;
@@ -627,7 +627,7 @@ img, svg {
 .type-meta-icon.purple { background: rgba(168,85,247,0.12); color: #9333ea; }
 
 .type-meta-label {
-  font-family: 'Playfair Display', serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
   color: var(--red-mid);
@@ -964,7 +964,7 @@ img, svg {
 }
 
 .faq-header h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: clamp(1.9rem, 4vw, 2.8rem);
   font-weight: 900;
   color: var(--text-white);
@@ -1162,7 +1162,7 @@ img, svg {
 }
 
 .footer-legal a:hover {
-  color: var(--text-muted);
+  color: var(--red-bright);
 }
 
 /* ----------------------------------------------------------

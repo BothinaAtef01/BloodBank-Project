@@ -172,7 +172,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .logout-btn {
-  color: var(--text-muted);
+  color: var(--crimson);
 }
 .logout-btn:hover { color: var(--crimson); background: var(--crimson-bg); }
 
@@ -244,7 +244,7 @@ a { text-decoration: none; color: inherit; }
 
 #pageTitle{
   font-size: 34px;
-  font-family: 'Playfair Display';
+  font-family: 'DM Sans', sans-serif;
 }
 
 .page-header {

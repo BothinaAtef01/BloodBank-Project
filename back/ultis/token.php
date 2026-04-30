@@ -1,9 +1,9 @@
 <?php 
 //يعمل رمز عشوائي
 function generateToken(): string {
-    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/I/1 ambiguity
-    $token = '';
-    for ($i = 0; $i < 8; $i++) {
+    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
+    $token = 'DB-';
+    for ($i = 0; $i < 5; $i++) {
         $token .= $chars[random_int(0, strlen($chars) - 1)];
     }
     return $token;

@@ -1,24 +1,14 @@
 <?php
-
+// outh.php — Session-based auth functions (login, register, validate token)
 
 require_once __DIR__ . '/../config/db.php';
 
-
-use Firebase\JWT\JWT;
-
-function signToken(array $user): string {
-    $secret  = $_ENV['JWT_SECRET'];
-    $expires = (int) ($_ENV['JWT_EXPIRES_IN'] ?? 604800); // default 7 days in seconds
-    $payload = [
-        'id'   => $user['id'],
-        'role' => $user['role'],
-        'iat'  => time(),
-        'exp'  => time() + $expires,
-    ];
-    return JWT::encode($payload, $secret, 'HS256');
+// نبدأ السيشن في كل الدوال اللي تحتاجها
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-//login
+// login
 function login(): void {
     $body     = jsonBody();
     $email    = trim($body['email']    ?? '');
@@ -36,10 +26,30 @@ function login(): void {
     if (!$user || !$user['is_active'] || !password_verify($password, $user['password_hash'])) {
         jsonResponse(['success' => false, 'message' => 'Invalid credentials.'], 401);
     }
-    //يحدث اخر تسجيل دخول للمستخدم
-    $db->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$user['id']]);
 
-    $token   = signToken($user);
+    // يحدث آخر تسجيل دخول للمستخدم
+    $db->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$user['id']]);
+    
+    // ===== Remember Me =====
+$days = (int) ($_ENV['SESSION_LIFETIME_DAYS'] ?? 30);
+session_set_cookie_params([
+    'lifetime' => $days * 24 * 3600,
+    'path'     => '/',
+    'secure'   => true,
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+ini_set('session.gc_maxlifetime', $days * 24 * 3600);
+
+
+    // ===== هنا الفرق الأساسي =====
+    // بدل ما نولد JWT token، نحفظ بيانات المستخدم في السيشن على السيرفر
+    // session_regenerate_id يحمي من هجمة Session Fixation
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['role']    = $user['role'];
+    // ==============================
+
     $profile = null;
 
     if ($user['role'] === 'donor') {
@@ -64,7 +74,6 @@ function login(): void {
     jsonResponse([
         'success' => true,
         'message' => 'Login successful.',
-        'token'   => $token,
         'user'    => [
             'id'        => $user['id'],
             'email'     => $user['email'],
@@ -76,7 +85,15 @@ function login(): void {
     ]);
 }
 
-//التأكد من الكود اللي وصل المستخدم
+// logout
+function logout(): void {
+    // نمسح كل بيانات السيشن ونحذفها من السيرفر
+    $_SESSION = [];
+    session_destroy();
+    jsonResponse(['success' => true, 'message' => 'Logged out successfully.']);
+}
+
+// التأكد من الكود اللي وصل المستخدم
 function validateRegistrationToken(): void {
     $body       = jsonBody();
     $token_code = strtoupper(trim($body['token_code'] ?? ''));
@@ -110,12 +127,12 @@ function validateRegistrationToken(): void {
         'success'      => true,
         'message'      => 'Token is valid. Please complete your registration.',
         'token_id'     => $token['id'],
-        'phone_number' => $token['phone_number'],
+        'email' => $token['email'],
         'center'       => ['name' => $token['center_name'], 'city' => $token['city']],
     ]);
 }
 
-//انشاء حساب جديد عن طريق الكود
+// إنشاء حساب جديد عن طريق الكود
 function registerDonor(): void {
     $body = jsonBody();
 
@@ -123,6 +140,7 @@ function registerDonor(): void {
     $email              = trim($body['email']              ?? '');
     $password           = trim($body['password']           ?? '');
     $full_name          = trim($body['full_name']           ?? '');
+    $username           = trim($body['username']           ?? '');
     $date_of_birth      = $body['date_of_birth']      ?? null;
     $gender             = $body['gender']             ?? null;
     $blood_type         = $body['blood_type']         ?? null;
@@ -132,7 +150,7 @@ function registerDonor(): void {
 
     $db = getDB();
 
-    // Re-validate token
+    // Re-validate 
     $stmt = $db->prepare("SELECT * FROM donor_registration_tokens WHERE token_code = ? AND status = 'pending' AND expires_at > NOW()");
     $stmt->execute([$token_code]);
     $regToken = $stmt->fetch();
@@ -152,8 +170,8 @@ function registerDonor(): void {
     try {
         $db->beginTransaction();
 
-        $stmt = $db->prepare("INSERT INTO users (email, password_hash, role, full_name, phone, is_active) VALUES (?, ?, 'donor', ?, ?, 1)");
-        $stmt->execute([$email, $hash, $full_name, $regToken['phone_number']]);
+        $stmt = $db->prepare("INSERT INTO users (email, username, password_hash, role, full_name, phone, is_active) VALUES (?, ?, ?, 'donor', ?, ?, 1)");
+        $stmt->execute([$email, $username, $hash, $full_name, $regToken['phone_number']]);
         $userId = (int) $db->lastInsertId();
 
         $db->prepare('
@@ -164,21 +182,36 @@ function registerDonor(): void {
         $db->prepare("UPDATE donor_registration_tokens SET status='used', used_at=NOW() WHERE id=?")->execute([$regToken['id']]);
 
         $db->commit();
+     try {
+      require_once __DIR__ . '/../services/email.php';
+       sendWelcomeCredentials($email, $full_name, $password, $username);
+    } catch (Exception $e) {
+     error_log('Welcome email failed: ' . $e->getMessage());
+    }
+
     } catch (Exception $e) {
         $db->rollBack();
         throw $e;
     }
 
-    $token = signToken(['id' => $userId, 'role' => 'donor']);
+   
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = $userId;
+    $_SESSION['role']    = 'donor';
+    
 
     jsonResponse([
         'success' => true,
         'message' => 'Account created successfully. Welcome!',
-        'token'   => $token,
-        'user'    => ['id' => $userId, 'email' => $email, 'full_name' => $full_name, 'role' => 'donor', 'phone' => $regToken['phone_number']],
+        'user'    => [
+            'id'        => $userId,
+            'email'     => $email,
+            'full_name' => $full_name,
+            'role'      => 'donor',
+            'phone'     => $regToken['phone_number'],
+        ],
     ], 201);
 }
-
 
 function getMe(array $user): void {
     $db   = getDB();

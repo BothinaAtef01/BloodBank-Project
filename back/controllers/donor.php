@@ -112,26 +112,6 @@ function donorGetTips(): void {
     jsonResponse(['success' => true, 'tips' => $stmt->fetchAll()]);
 }
 
-// 
-// function donorUpdateProfile(array $user): void {
-//     $body      = jsonBody();
-//     $full_name = trim($body['full_name'] ?? '');
-//     $latitude  = $body['latitude']  ?? null;
-//     $longitude = $body['longitude'] ?? null;
-
-//     $db = getDB();
-
-//     if ($full_name) {
-//         $db->prepare('UPDATE users SET full_name = ? WHERE id = ?')->execute([$full_name, $user['id']]);
-//     }
-
-//     if ($latitude && $longitude) {
-//         $db->prepare('UPDATE donor_profiles SET latitude = ?, longitude = ? WHERE user_id = ?')
-//            ->execute([$latitude, $longitude, $user['id']]);
-//     }
-
-//     jsonResponse(['success' => true, 'message' => 'Profile updated.']);
-// }
 
 // share
 function donorGetShareCard(array $user): void {
@@ -152,7 +132,7 @@ function donorGetShareCard(array $user): void {
     }
 
     $total = (int) $d['total_donations'];
-    $s     = $total !== 1 ? 's' : '';
+    $s = $total !== 1 ? 's' : '';
 
     jsonResponse([
         'success'    => true,

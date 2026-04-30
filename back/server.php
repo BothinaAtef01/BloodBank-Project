@@ -1,5 +1,4 @@
 <?php
-// index.php — Front controller / router
 
 declare(strict_types=1);
 
@@ -26,7 +25,7 @@ function jsonBody(): array {
 }
 
 // ── CORS & headers ────────────────────────────────────────────────────────────
-$allowedOrigin = $_ENV['CLIENT_URL'] ?? 'http://localhost:3000';
+$allowedOrigin = $_ENV['CLIENT_URL'] ?? 'http://localhost:3000';//
 header("Access-Control-Allow-Origin: {$allowedOrigin}");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS');
@@ -45,7 +44,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri    = '/' . trim($uri, '/');
 
-// Strip /api prefix
+
 if (str_starts_with($uri, '/api')) {
     $uri = substr($uri, 4);
 }
@@ -55,7 +54,7 @@ if ($uri === '/health' && $method === 'GET') {
     jsonResponse(['success' => true, 'message' => 'Blood Bank API is running', 'timestamp' => date('c')]);
 }
 
-// ── Auth routes ───────────────────────────────────────────────────────────────
+// ── outh routes ───────────────────────────────────────────────────────────────
 if (str_starts_with($uri, '/auth')) {
     require_once __DIR__ . '/controllers/outh.php';
 
@@ -64,6 +63,7 @@ if (str_starts_with($uri, '/auth')) {
         $uri === '/auth/validate-token' && $method === 'POST' => validateRegistrationToken(),
         $uri === '/auth/register-donor' && $method === 'POST' => registerDonor(),
         $uri === '/auth/me'             && $method === 'GET'  => getMe(authenticate()),
+        $uri === '/auth/logout' && $method === 'POST' => logout(),
         default => jsonResponse(['success' => false, 'message' => "Route {$uri} not found."], 404),
     };
 }
@@ -76,7 +76,6 @@ if (str_starts_with($uri, '/donor')) {
 
     match (true) {
         $uri === '/donor/profile'          && $method === 'GET'   => donorGetProfile($user),
-        $uri === '/donor/profile'          && $method === 'PATCH' => donorUpdateProfile($user),
         $uri === '/donor/nearby-centers'   && $method === 'GET'   => donorGetNearbyCenters(),
         $uri === '/donor/donation-history' && $method === 'GET'   => donorGetDonationHistory($user),
         $uri === '/donor/tips'             && $method === 'GET'   => donorGetTips(),
@@ -92,9 +91,8 @@ if (str_starts_with($uri, '/staff')) {
     authorize(['staff', 'admin'], $user);
 
     // Match parameterized routes
-    if ($uri === '/staff/my-permissions' && $method === 'GET') {
-        staffGetMyPermissions($user);
-    } elseif ($uri === '/staff/issue-token' && $method === 'POST') {
+    
+     if ($uri === '/staff/issue-token' && $method === 'POST') {
         requirePermission('issue_tokens', $user);
         staffIssueToken($user);
     } elseif ($uri === '/staff/donors/search' && $method === 'GET') {
@@ -123,18 +121,12 @@ if (str_starts_with($uri, '/admin')) {
     if      ($uri === '/admin/dashboard'                                        && $method === 'GET')    adminGetDashboard($user);
     elseif  ($uri === '/admin/accounts'                                         && $method === 'GET')    adminGetAccounts();
     elseif  ($uri === '/admin/accounts/staff'                                   && $method === 'POST')   adminCreateStaffAccount($user);
-    elseif  ($uri === '/admin/accounts/admin'                                   && $method === 'POST')   adminCreateAdminAccount($user);
-    elseif  (preg_match('#^/admin/accounts/(\d+)/toggle$#', $uri, $m)          && $method === 'PATCH')  adminToggleAccount($user, (int) $m[1]);
-    elseif  (preg_match('#^/admin/permissions/(\d+)$#', $uri, $m)              && $method === 'GET')    adminGetStaffPermissions((int) $m[1]);
     elseif  ($uri === '/admin/permissions'                                      && $method === 'POST')   adminGrantPermission($user);
     elseif  ($uri === '/admin/permissions'                                      && $method === 'DELETE') adminRevokePermission($user);
     elseif  ($uri === '/admin/inventory'                                        && $method === 'GET')    adminGetInventory();
     elseif  (preg_match('#^/admin/inventory/(\d+)$#', $uri, $m)                && $method === 'PATCH')  adminUpdateInventory($user, (int) $m[1]);
     elseif  ($uri === '/admin/reports'                                          && $method === 'GET')    adminGetReports();
-    elseif  ($uri === '/admin/reports'                                          && $method === 'POST')   adminCreateReport($user);
     elseif  ($uri === '/admin/branches'                                         && $method === 'GET')    adminGetBranches();
-    elseif  ($uri === '/admin/branches'                                         && $method === 'POST')   adminCreateBranch();
-    elseif  ($uri === '/admin/audit-logs'                                       && $method === 'GET')    adminGetAuditLogs();
     else    jsonResponse(['success' => false, 'message' => "Route {$uri} not found."], 404);
 }
 
@@ -160,7 +152,7 @@ if (str_starts_with($uri, '/centers')) {
         $stmt->execute([(int) $m[1]]);
         $center = $stmt->fetch();
         if (!$center) jsonResponse(['success' => false, 'message' => 'Center not found.'], 404);
-        jsonResponse(['success' => true, 'center' => $center]);
+        jsonResponse(['success' => true, 'center' => $center]);//
     } else {
         jsonResponse(['success' => false, 'message' => "Route {$uri} not found."], 404);
     }

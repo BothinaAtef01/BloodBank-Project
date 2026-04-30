@@ -1,6 +1,5 @@
 <?php
 
-
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../middleware/audit.php';
 
@@ -92,38 +91,6 @@ function adminCreateStaffAccount(array $user): void {
     jsonResponse(['success' => true, 'message' => 'Staff account created successfully.', 'user_id' => $userId, 'staff_id' => $staffId], 201);
 }
 
-
-
-/////
-// function adminToggleAccount(array $user, int $targetId): void {
-//     $db   = getDB();
-//     $stmt = $db->prepare('SELECT id, is_active, role FROM users WHERE id = ?');
-//     $stmt->execute([$targetId]);
-//     $target = $stmt->fetch();
-
-//     if (!$target) jsonResponse(['success' => false, 'message' => 'User not found.'], 404);
-
-//     $newStatus = $target['is_active'] ? 0 : 1;
-//     $db->prepare('UPDATE users SET is_active = ? WHERE id = ?')->execute([$newStatus, $targetId]);
-
-//     auditLog(['userId' => $user['id'], 'action' => $newStatus ? 'activate_account' : 'deactivate_account', 'targetTable' => 'users', 'targetId' => $targetId, 'oldValue' => ['is_active' => $target['is_active']], 'newValue' => ['is_active' => $newStatus], 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? null]);
-
-//     jsonResponse(['success' => true, 'message' => 'Account ' . ($newStatus ? 'activated' : 'deactivated') . '.', 'is_active' => (bool) $newStatus]);
-// }
-/////////
-//
-// function adminGetStaffPermissions(int $staffId): void {
-//     $db   = getDB();
-//     $stmt = $db->prepare('
-//         SELECT sp.id, sp.permission, sp.is_active, sp.granted_at, sp.revoked_at, u.full_name AS granted_by
-//         FROM staff_permissions sp
-//         JOIN admin_profiles ap ON ap.id = sp.granted_by_admin_id
-//         JOIN users u ON u.id = ap.user_id
-//         WHERE sp.staff_id = ?
-//     ');
-//     $stmt->execute([$staffId]);
-//     jsonResponse(['success' => true, 'permissions' => $stmt->fetchAll()]);
-// }
 
 //يمنح صلاحية للموضف
 function adminGrantPermission(array $user): void {
@@ -240,44 +207,6 @@ function adminGetReports(): void {
     jsonResponse(['success' => true, 'reports' => $stmt->fetchAll()]);
 }
 
-// انشاء تقرير للمخزون
-function adminCreateReport(array $user): void {
-    $body = jsonBody();
-    $db   = getDB();
-
-    $adminStmt = $db->prepare('SELECT id FROM admin_profiles WHERE user_id = ?');
-    $adminStmt->execute([$user['id']]);
-    $admin = $adminStmt->fetch();
-
-    $inv = $db->prepare('SELECT blood_type, units_available, minimum_threshold FROM blood_inventory WHERE center_id = ?');
-    $inv->execute([$body['center_id']]);
-    $inventory = $inv->fetchAll();
-
-    $shortage_summary = [];
-    $surplus_summary  = [];
-    foreach ($inventory as $row) {
-        $diff = $row['units_available'] - $row['minimum_threshold'];
-        if ($diff < 0)  $shortage_summary[$row['blood_type']] = abs($diff);
-        elseif ($diff > 5) $surplus_summary[$row['blood_type']] = $diff;
-    }
-
-    $db->prepare('
-        INSERT INTO inventory_reports (center_id, created_by_admin_id, report_date, period, shortage_summary, surplus_summary, recommendations, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ')->execute([
-        $body['center_id'],
-        $admin['id'],
-        $body['report_date'] ?? date('Y-m-d'),
-        $body['period']      ?? 'weekly',
-        json_encode($shortage_summary),
-        json_encode($surplus_summary),
-        $body['recommendations'] ?? null,
-        $body['status']          ?? 'draft',
-    ]);
-    $reportId = (int) $db->lastInsertId();
-
-    jsonResponse(['success' => true, 'message' => 'Report created successfully.', 'report_id' => $reportId, 'shortage_summary' => $shortage_summary, 'surplus_summary' => $surplus_summary], 201);
-}
 
 // عرض قائمة الفروع
 function adminGetBranches(): void {

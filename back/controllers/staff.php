@@ -3,16 +3,16 @@
 
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../utils/token.php';
-require_once __DIR__ . '/../services/sms.php';
+require_once __DIR__ . '/../services/email.php';
 require_once __DIR__ . '/../middleware/audit.php';
 
 // يرسل كود التسجيل
 function staffIssueToken(array $user): void {
     $body         = jsonBody();
-    $phone_number = trim($body['phone_number'] ?? '');
+    $email= trim($body['email'] ?? '');
 
-    if (!$phone_number) {
-        jsonResponse(['success' => false, 'message' => 'Phone number is required.'], 400);
+    if (!$email) {
+        jsonResponse(['success' => false, 'message' => 'Email is required.'], 400);
     }
 
     $db   = getDB();
@@ -29,23 +29,23 @@ function staffIssueToken(array $user): void {
         jsonResponse(['success' => false, 'message' => 'Staff profile not found.'], 404);
     }
 
-    $check = $db->prepare("SELECT id FROM donor_registration_tokens WHERE phone_number = ? AND status = 'pending' AND expires_at > NOW()");
-    $check->execute([$phone_number]);
+    $check = $db->prepare("SELECT id FROM donor_registration_tokens WHERE email = ? AND status = 'pending' AND expires_at > NOW()");
+    $check->execute([$email]);
     if ($check->fetch()) {
-        jsonResponse(['success' => false, 'message' => 'This phone number already has an active registration token.'], 409);
+        jsonResponse(['success' => false, 'message' => 'This email already has an active registration token.'], 409);
     }
 
     $tokenCode = generateToken();
     $expiresAt = tokenExpiresAt();
 
-    $ins = $db->prepare("INSERT INTO donor_registration_tokens (issued_by_staff_id, center_id, token_code, phone_number, status, expires_at) VALUES (?, ?, ?, ?, 'pending', ?)");
-    $ins->execute([$staff['staff_id'], $staff['center_id'], $tokenCode, $phone_number, $expiresAt]);
+    $ins = $db->prepare("INSERT INTO donor_registration_tokens (issued_by_staff_id, center_id, token_code, email, status, expires_at) VALUES (?, ?, ?, ?, 'pending', ?)");
+    $ins->execute([$staff['staff_id'], $staff['center_id'], $tokenCode, $email, $expiresAt]);
     $newId = (int) $db->lastInsertId();
 
     try {
-        sendRegistrationToken($phone_number, $tokenCode, $staff['center_name']);
+        sendWelcomeCredentials($email,"", $tokenCode, $staff['center_name']);
     } catch (Exception $e) {
-        error_log('SMS failed: ' . $e->getMessage());
+        error_log('email failed: ' . $e->getMessage());
     }
 
     auditLog([
@@ -53,13 +53,13 @@ function staffIssueToken(array $user): void {
         'action'      => 'issue_token',
         'targetTable' => 'donor_registration_tokens',
         'targetId'    => $newId,
-        'newValue'    => ['phone_number' => $phone_number, 'tokenCode' => $tokenCode, 'center_id' => $staff['center_id']],
+        'newValue'    => ['email' => $email, 'tokenCode' => $tokenCode, 'center_id' => $staff['center_id']],
         'ipAddress'   => $_SERVER['REMOTE_ADDR'] ?? null,
     ]);
 
     jsonResponse([
         'success'    => true,
-        'message'    => "Registration token issued. SMS sent to {$phone_number}.",
+        'message'    => "Registration token issued. Email sent to {$email}.",
         'token_code' => $tokenCode,
         'expires_at' => $expiresAt,
     ], 201);
@@ -93,7 +93,7 @@ function staffSearchDonors(): void {
 function staffGetDonorInfo(int $donorId): void {
     $db   = getDB();
     $stmt = $db->prepare('
-        SELECT u.id AS user_id, u.full_name, u.email, u.phone, u.created_at AS registered_at,
+        SELECT user_id, u.full_name, u.email, u.phone, u.created_at AS registered_at,
                dp.id AS donor_id, dp.blood_type, dp.date_of_birth, dp.gender,
                dp.weight_kg, dp.national_id, dp.medical_conditions
         FROM donor_profiles dp
@@ -166,8 +166,8 @@ function staffAddDonation(array $user): void {
     try {
         $db->beginTransaction();
 
-        $ins = $db->prepare("INSERT INTO donation_records (donor_id, center_id, staff_id, donation_date, donation_type, volume_ml, status, next_eligible_date, notes) VALUES (?, ?, ?, ?, ?, ?, 'completed', ?, ?)");
-        $ins->execute([$donor_id, $staff['center_id'], $staff['id'], $donationDate, $donation_type, $volume_ml, $nextEligible, $notes]);
+        $ins = $db->prepare("INSERT INTO donation_records (donor_id, center_id, staff_id, donation_date, volume_ml, status, next_eligible_date, notes) VALUES (?, ?, ?, ?, ?, ?, 'completed', ?, ?)");
+        $ins->execute([$donor_id, $staff['center_id'], $staff['id'], $donationDate, $volume_ml, $nextEligible, $notes]);
         $donationId = (int) $db->lastInsertId();
 
         $db->prepare('
@@ -186,7 +186,7 @@ function staffAddDonation(array $user): void {
     auditLog([
         'userId' => $user['id'], 'action' => 'add_donation',
         'targetTable' => 'donation_records', 'targetId' => $donationId,
-        'newValue' => ['donor_id' => $donor_id, 'donation_type' => $donation_type, 'donationDate' => $donationDate],
+        'newValue' => ['donor_id' => $donor_id,, 'donationDate' => $donationDate],
         'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? null,
     ]);
 

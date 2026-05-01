@@ -1,7 +1,7 @@
 <?php
 // controllers/staff.controller.php
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/../utils/token.php';
 require_once __DIR__ . '/../services/email.php';
 require_once __DIR__ . '/../middleware/audit.php';
@@ -17,10 +17,9 @@ function staffIssueToken(array $user): void {
 
     $db   = getDB();
     $stmt = $db->prepare('
-        SELECT sp.id AS staff_id, sp.center_id, bc.name AS center_name
-        FROM staff_profiles sp
-        JOIN blood_centers bc ON bc.id = sp.center_id
-        WHERE sp.user_id = ?
+        SELECT staff_id
+        FROM staff
+        WHERE staff_id =?
     ');
     $stmt->execute([$user['id']]);
     $staff = $stmt->fetch();
@@ -29,21 +28,21 @@ function staffIssueToken(array $user): void {
         jsonResponse(['success' => false, 'message' => 'Staff profile not found.'], 404);
     }
 
-    $check = $db->prepare("SELECT id FROM donor_registration_tokens WHERE email = ? AND status = 'pending' AND expires_at > NOW()");
+    $check = $db->prepare("SELECT donor_unique_id FROM donor WHERE email = ?");
     $check->execute([$email]);
     if ($check->fetch()) {
-        jsonResponse(['success' => false, 'message' => 'This email already has an active registration token.'], 409);
+        jsonResponse(['success' => false, 'message' => 'This email already has a registration token.'], 409);
     }
 
-    $tokenCode = generateToken();
+    $donor_unique_id = generateToken();
     $expiresAt = tokenExpiresAt();
 
-    $ins = $db->prepare("INSERT INTO donor_registration_tokens (issued_by_staff_id, center_id, token_code, email, status, expires_at) VALUES (?, ?, ?, ?, 'pending', ?)");
-    $ins->execute([$staff['staff_id'], $staff['center_id'], $tokenCode, $email, $expiresAt]);
+    $ins = $db->prepare("INSERT INTO donor (donor_unique_id, email) VALUES (?, ?)");
+    $ins->execute(['$donor_unique_id', $email]);
     $newId = (int) $db->lastInsertId();
 
     try {
-        sendWelcomeCredentials($email,"", $tokenCode, $staff['center_name']);
+        sendWelcomeCredentials($email,"", $donor_unique_id, $staff['center_name']);///
     } catch (Exception $e) {
         error_log('email failed: ' . $e->getMessage());
     }
@@ -53,14 +52,14 @@ function staffIssueToken(array $user): void {
         'action'      => 'issue_token',
         'targetTable' => 'donor_registration_tokens',
         'targetId'    => $newId,
-        'newValue'    => ['email' => $email, 'tokenCode' => $tokenCode, 'center_id' => $staff['center_id']],
+        'newValue'    => ['email' => $email, 'tokenCode' => $donor_unique_id, 'center_id' => $staff['center_id']],
         'ipAddress'   => $_SERVER['REMOTE_ADDR'] ?? null,
     ]);
 
     jsonResponse([
         'success'    => true,
         'message'    => "Registration token issued. Email sent to {$email}.",
-        'token_code' => $tokenCode,
+        'token_code' => $donor_unique_id,
         'expires_at' => $expiresAt,
     ], 201);
 }
@@ -75,13 +74,10 @@ function staffSearchDonors(): void {
     $like = "%{$q}%";
     $db   = getDB();
     $stmt = $db->prepare('
-        SELECT u.id AS user_id, u.full_name, u.email, u.phone,
-               dp.id AS donor_id, dp.blood_type, dp.national_id, dp.date_of_birth,
-               (SELECT donation_date FROM donation_records WHERE donor_id = dp.id ORDER BY donation_date DESC LIMIT 1) AS last_donation_date,
-               (SELECT next_eligible_date FROM donation_records WHERE donor_id = dp.id ORDER BY donation_date DESC LIMIT 1) AS next_eligible_date
-        FROM users u
-        JOIN donor_profiles dp ON dp.user_id = u.id
-        WHERE u.role = \'donor\' AND (u.full_name LIKE ? OR u.phone LIKE ? OR dp.national_id LIKE ?)
+        SELECT donor_id, full_name, email,
+                blood_type,national_id,date_of_birth
+        FROM donors 
+        WHERE full_name LIKE ? OR blood_type LIKE ? OR email LIKE ?
         LIMIT 20
     ');
     $stmt->execute([$like, $like, $like]);
@@ -93,12 +89,10 @@ function staffSearchDonors(): void {
 function staffGetDonorInfo(int $donorId): void {
     $db   = getDB();
     $stmt = $db->prepare('
-        SELECT user_id, u.full_name, u.email, u.phone, u.created_at AS registered_at,
-               dp.id AS donor_id, dp.blood_type, dp.date_of_birth, dp.gender,
-               dp.weight_kg, dp.national_id, dp.medical_conditions
-        FROM donor_profiles dp
-        JOIN users u ON u.id = dp.user_id
-        WHERE dp.id = ?
+        SELECT id, full_name, email, blood_type, age, 
+            weight_kg, national_id
+        FROM donors
+        WHERE id = ?
     ');
     $stmt->execute([$donorId]);
     $donor = $stmt->fetch();
@@ -108,27 +102,22 @@ function staffGetDonorInfo(int $donorId): void {
     }
 
     $s = $db->prepare('
-        SELECT dr.id, dr.donation_date, dr.donation_type, dr.volume_ml,
-               dr.status, dr.next_eligible_date, dr.notes,
-               bc.name AS center_name,
-               st.is_eligible, st.hemoglobin_g_dl, st.blood_pressure,
-               st.hiv_result, st.hepatitis_b_result, st.hepatitis_c_result, st.syphilis_result
-        FROM donation_records dr
-        JOIN blood_centers bc ON bc.id = dr.center_id
-        LEFT JOIN screening_tests st ON st.donation_id = dr.id
-        WHERE dr.donor_id = ?
-        ORDER BY dr.donation_date DESC
+        SELECT  donors.last_donation_date,donations.hemoglobin_level,
+        donations.virus_test
+        FROM donors
+        JOIN donations ON donors.donor_unique_id = donations.donor_unique_id
+        WHERE donors.id = ?
+        ORDER BY donations.last_donation_date DESC
+       LIMIT 1;
     ');
     $s->execute([$donorId]);
     $donations = $s->fetchAll();
 
-    $completed = array_filter($donations, fn($d) => $d['status'] === 'completed');
 
     jsonResponse([
         'success'          => true,
         'donor'            => $donor,
         'donations'        => $donations,
-        'total_donations'  => count($completed),
     ]);
 }
 

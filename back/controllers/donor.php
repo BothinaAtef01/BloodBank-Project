@@ -1,16 +1,22 @@
 <?php
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/connection.php';
 
 //يرجع بيانات المتبرع
 function donorGetProfile(array $user): void {
     $db   = getDB();
     $stmt = $db->prepare('
-        SELECT u.id AS user_id, u.full_name, u.email, u.phone, u.created_at,
-               dp.id AS donor_id, dp.blood_type, dp.date_of_birth, dp.gender,
-               dp.weight_kg, dp.national_id, dp.medical_conditions
-        FROM donor_profiles dp
-        JOIN users u ON u.id = dp.user_id
+        SELECT  email,              
+                username,           
+                password  ,         
+                full_name  ,        
+                date_of_birth ,     
+                gender   ,          
+                blood_type  ,       
+                weight_kg   ,       
+                national_id ,       
+                medical_conditions ,
+        FROM donors
         WHERE dp.user_id = ?
     ');
     $stmt->execute([$user['id']]);
@@ -43,38 +49,26 @@ function donorGetProfile(array $user): void {
 
 //يشوف المراكز المتاحه
 function donorGetNearbyCenters(): void {
-    $lat    = $_GET['lat']    ?? null;
-    $lng    = $_GET['lng']    ?? null;
-    $radius = $_GET['radius'] ?? 50;
-
+    
     $db = getDB();
 
-    if (!$lat || !$lng) {
-        $stmt = $db->query('SELECT id, name, address, city, phone, opening_hours FROM blood_centers WHERE is_active = 1');
-        jsonResponse(['success' => true, 'centers' => $stmt->fetchAll()]);
-    }
-
     $stmt = $db->prepare('
-        SELECT id, name, address, city, phone, opening_hours, latitude, longitude,
-            ROUND(6371 * ACOS(
-                COS(RADIANS(?)) * COS(RADIANS(latitude)) *
-                COS(RADIANS(longitude) - RADIANS(?)) +
-                SIN(RADIANS(?)) * SIN(RADIANS(latitude))
-            ), 2) AS distance_km
-        FROM blood_centers
-        WHERE is_active = 1
-        HAVING distance_km <= ?
-        ORDER BY distance_km ASC
+        SELECT hospital_id,hospital_name,location,contact_info
+        FROM hospitals
     ');
-    $stmt->execute([$lat, $lng, $lat, $radius]);
 
-    jsonResponse(['success' => true, 'centers' => $stmt->fetchAll()]);
+     $stmt->execute(); 
+
+    jsonResponse([
+        'success' => true,
+        'centers' => $stmt->fetchAll()
+    ]);
 }
 
 //تاريخ التبرعات
 function donorGetDonationHistory(array $user): void {
     $db   = getDB();
-    $stmt = $db->prepare('SELECT id FROM donor_profiles WHERE user_id = ?');
+    $stmt = $db->prepare('SELECT id FROM donors WHERE user_id = ?');
     $stmt->execute([$user['id']]);
     $donor = $stmt->fetch();
 
@@ -83,41 +77,39 @@ function donorGetDonationHistory(array $user): void {
     }
 
     $s = $db->prepare('
-        SELECT dr.donation_date, dr.volume_ml, dr.status,
-               dr.next_eligible_date,
-               DATEDIFF(dr.next_eligible_date, CURDATE()) AS days_until_eligible,
-               bc.name AS center_name, bc.city
-        FROM donation_records dr
-        JOIN blood_centers bc ON bc.id = dr.center_id
-        WHERE dr.donor_id = ?
-        ORDER BY dr.donation_date DESC
+         SELECT last_donation_date
+         FROM donors
+         WHERE id = ?
     ');
     $s->execute([$donor['id']]);
     $donations = $s->fetchAll();
 
-    jsonResponse(['success' => true, 'donations' => $donations, 'total' => count($donations)]);
+    jsonResponse([
+    'success' => true, 
+    'donations' => $donations
+    ]);
 }
 
 // نصائح
-function donorGetTips(): void {
-    $type = $_GET['type'] ?? 'whole';
-    $db   = getDB();
-    $stmt = $db->prepare("
-        SELECT id, category, title, content
-        FROM post_donation_tips
-        WHERE is_active = 1 AND (applies_to_type = 'all' OR applies_to_type = ?)
-        ORDER BY sort_order ASC
-    ");
-    $stmt->execute([$type]);
-    jsonResponse(['success' => true, 'tips' => $stmt->fetchAll()]);
-}
+// function donorGetTips(): void {
+//     $type = $_GET['type'] ?? 'whole';
+//     $db   = getDB();
+//     $stmt = $db->prepare("
+//         SELECT id, category, title, content
+//         FROM post_donation_tips
+//         WHERE is_active = 1 AND (applies_to_type = 'all' OR applies_to_type = ?)
+//         ORDER BY sort_order ASC
+//     ");
+//     $stmt->execute([$type]);
+//     jsonResponse(['success' => true, 'tips' => $stmt->fetchAll()]);
+// }
 
 
 // share
 function donorGetShareCard(array $user): void {
     $db   = getDB();
     $stmt = $db->prepare('
-        SELECT u.full_name, dp.blood_type,
+        SELECT full_name, blood_type,
             (SELECT COUNT(*) FROM donation_records WHERE donor_id = dp.id AND status=\'completed\') AS total_donations,
             (SELECT donation_date FROM donation_records WHERE donor_id = dp.id ORDER BY donation_date DESC LIMIT 1) AS last_donation
         FROM donor_profiles dp

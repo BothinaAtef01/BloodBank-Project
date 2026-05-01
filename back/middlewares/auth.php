@@ -1,7 +1,7 @@
 <?php
 // middleware/auth.php — Session-based authentication & role/permission guards
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/connection.php';
 
 // نبدأ السيشن إذا ما بدأت
 if (session_status() === PHP_SESSION_NONE) {

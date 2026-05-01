@@ -1,30 +1,22 @@
 <?php
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/connection.php';
 require_once __DIR__ . '/../middleware/audit.php';
 
-//admin/dashboard
+//admin dashboard
 function adminGetDashboard(array $user): void {
     $db   = getDB();
-    $stmt = $db->prepare('SELECT * FROM admin_profiles WHERE user_id = ?');
+    $stmt = $db->prepare('SELECT * FROM admin WHERE id = ?');
     $stmt->execute([$user['id']]);
     $admin = $stmt->fetch();
 
-    $isSuper      = $admin['access_level'] === 'super' || !$admin['managed_center_id'];
     $centerId     = $admin['managed_center_id'];
 
-    $totalDonors    = $db->query('SELECT COUNT(*) FROM donor_profiles')->fetchColumn();
-    $totalStaff     = $db->query('SELECT COUNT(*) FROM staff_profiles')->fetchColumn();
-    $totalCenters   = $db->query("SELECT COUNT(*) FROM blood_centers WHERE is_active=1")->fetchColumn();
+    $totalDonors    = $db->query('SELECT COUNT(*) FROM donors')->fetchColumn();
+    $totalStaff     = $db->query('SELECT COUNT(*) FROM staff')->fetchColumn();
+    $totalCenters   = $db->query("SELECT COUNT(*) FROM hospitals")->fetchColumn();
+    $totalDonations = $db->query("SELECT COUNT(*) FROM donations")->fetchColumn();
 
-    $donFilter = $isSuper ? '' : "AND dr.center_id = {$centerId}";
-    $totalDonations = $db->query("SELECT COUNT(*) FROM donation_records WHERE status='completed' {$donFilter}")->fetchColumn();
-    $monthDonations = $db->query("SELECT COUNT(*) FROM donation_records WHERE status='completed' AND MONTH(donation_date)=MONTH(NOW()) AND YEAR(donation_date)=YEAR(NOW()) {$donFilter}")->fetchColumn();
-
-    $invFilter = $isSuper ? '' : "AND bi.center_id = {$centerId}";
-    $shortages = $db->query("SELECT bi.blood_type, bi.units_available, bi.minimum_threshold, bc.name AS center_name FROM blood_inventory bi JOIN blood_centers bc ON bc.id = bi.center_id WHERE bi.units_available < bi.minimum_threshold {$invFilter} ORDER BY bi.units_available ASC")->fetchAll();
-
-    $recentDonations = $db->query("SELECT u.full_name, dp.blood_type, dr.donation_date, dr.status, bc.name AS center_name FROM donation_records dr JOIN donor_profiles dp ON dp.id = dr.donor_id JOIN users u ON u.id = dp.user_id JOIN blood_centers bc ON bc.id = dr.center_id WHERE dr.status='completed' {$donFilter} ORDER BY dr.donation_date DESC LIMIT 5")->fetchAll();
 
     jsonResponse([
         'success' => true,
@@ -33,39 +25,38 @@ function adminGetDashboard(array $user): void {
             'total_staff'          => (int) $totalStaff,
             'total_donations'      => (int) $totalDonations,
             'total_centers'        => (int) $totalCenters,
-            'donations_this_month' => (int) $monthDonations,
-            'shortage_alerts'      => count($shortages),
         ],
-        'shortages'          => $shortages,
-        'recent_donations'   => $recentDonations,
+       'admin_profile' => $admin
     ]);
 }
 
-// يعرض كل الحسابات
+// يعرض كل حسابات الموظفين
 function adminGetAccounts(): void {
-    $role   = $_GET['role']  ?? null;
     $page   = max(1, (int) ($_GET['page']  ?? 1));
     $limit  = max(1, (int) ($_GET['limit'] ?? 20));
-    $offset = ($page - 1) * $limit;
 
-    $db     = getDB();
-    $where  = $role ? "AND u.role = " . $db->quote($role) : '';
+    $db  = getDB();
 
-    $users = $db->query("SELECT u.id, u.email, u.full_name, u.phone, u.role, u.is_active, u.created_at, u.last_login FROM users u WHERE 1=1 {$where} ORDER BY u.created_at DESC LIMIT {$limit} OFFSET {$offset}")->fetchAll();
-    $total = $db->query("SELECT COUNT(*) FROM users WHERE 1=1 {$where}")->fetchColumn();
+    $users = $db->query("SELECT id, email, full_name, phone,is_active, created_at,last_login 
+    FROM staff")->fetchAll();
+    $total = $db->query("SELECT * FROM staff ")->fetchColumn();
 
-    jsonResponse(['success' => true, 'users' => $users, 'total' => (int) $total, 'page' => $page, 'limit' => $limit]);
+    jsonResponse(['success' => true, 
+    'users' => $users, 
+    'total' => (int) $total, 
+    'page' => $page,
+     'limit' => $limit]);
 }
 
-//
+//يضيف موظف جديد
 function adminCreateStaffAccount(array $user): void {
     $body = jsonBody();
 
     $db = getDB();
-    $ch = $db->prepare('SELECT id FROM users WHERE email = ? OR phone = ?');
-    $ch->execute([$body['email'], $body['phone']]);
+    $ch = $db->prepare('SELECT staff_id FROM staff WHERE email = ?');
+    $ch->execute([$body['email']]);
     if ($ch->fetch()) {
-        jsonResponse(['success' => false, 'message' => 'Email or phone already in use.'], 409);
+        jsonResponse(['success' => false, 'message' => 'Email already in use.'], 409);
     }
 
     $hash = password_hash($body['password'], PASSWORD_BCRYPT, ['cost' => 12]);
@@ -73,12 +64,15 @@ function adminCreateStaffAccount(array $user): void {
     try {
         $db->beginTransaction();
 
-        $db->prepare("INSERT INTO users (email, password_hash, role, full_name, phone) VALUES (?, ?, 'staff', ?, ?)")
-           ->execute([$body['email'], $hash, $body['full_name'], $body['phone']]);
-        $userId = (int) $db->lastInsertId();
-
-        $db->prepare('INSERT INTO staff_profiles (user_id, center_id, employee_code, job_title, department, hired_at) VALUES (?, ?, ?, ?, ?, ?)')
-           ->execute([$userId, $body['center_id'], $body['employee_code'], $body['job_title'] ?? null, $body['department'] ?? null, $body['hired_at'] ?? null]);
+        $db->prepare('INSERT INTO staff (staff_id, hospital_id,full_name,username,password_hash) VALUES (?, ?, ?, ?, ?)')
+         ->execute([
+            $body['email'],
+            $hash,
+            $body['full_name'],
+            $body['username'],
+            $body['staff_id'],
+            $body['hospital_id']
+        ]);
         $staffId = (int) $db->lastInsertId();
 
         $db->commit();
@@ -86,43 +80,44 @@ function adminCreateStaffAccount(array $user): void {
         $db->rollBack(); throw $e;
     }
 
-    auditLog(['userId' => $user['id'], 'action' => 'create_staff_account', 'targetTable' => 'users', 'targetId' => $userId, 'newValue' => ['email' => $body['email'], 'center_id' => $body['center_id']], 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? null]);
+    auditLog(['userId' => $user['id'], 'action' => 'create_staff_account', 'targetTable' => 'staff', 'targetId' => $staffId, 'newValue' => ['email' => $body['email'], 'center_id' => $body['center_id']], 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? null]);
 
-    jsonResponse(['success' => true, 'message' => 'Staff account created successfully.', 'user_id' => $userId, 'staff_id' => $staffId], 201);
+    jsonResponse(['success' => true, 'message' => 'Staff account created successfully.', 'user_id' => $staffId, 'staff_id' => $staffId], 201);
 }
 
 
 //يمنح صلاحية للموضف
-function adminGrantPermission(array $user): void {
+// function adminGrantPermission(array $user): void {
+//     $body = jsonBody();
+//     $db   = getDB();
+
+//     $adminRows = $db->prepare('SELECT id FROM admin_profiles WHERE user_id = ?');
+//     $adminRows->execute([$user['id']]);
+//     $admin = $adminRows->fetch();
+
+//     $db->prepare('
+//         INSERT INTO staff_permissions (staff_id, granted_by_admin_id, permission, is_active)
+//         VALUES (?, ?, ?, 1)
+//         ON DUPLICATE KEY UPDATE is_active=1, granted_at=NOW(), revoked_at=NULL, granted_by_admin_id=VALUES(granted_by_admin_id)
+//     ')->execute([$body['staff_id'], $admin['id'], $body['permission']]);
+
+//     auditLog(['userId' => $user['id'], 'action' => 'grant_permission', 'targetTable' => 'staff_permissions', 'newValue' => ['staff_id' => $body['staff_id'], 'permission' => $body['permission']], 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? null]);
+
+//     jsonResponse(['success' => true, 'message' => "Permission '{$body['permission']}' granted."]);
+// }
+
+//يحذف الموضف
+function admindeleteStaff(array $user): void {
     $body = jsonBody();
     $db   = getDB();
 
-    $adminRows = $db->prepare('SELECT id FROM admin_profiles WHERE user_id = ?');
-    $adminRows->execute([$user['id']]);
-    $admin = $adminRows->fetch();
+    $stmt= $db->prepare('DELETE FROM staff WHERE staff_id=?');
+    $stmt->execute([$body['staff_id']]);
 
-    $db->prepare('
-        INSERT INTO staff_permissions (staff_id, granted_by_admin_id, permission, is_active)
-        VALUES (?, ?, ?, 1)
-        ON DUPLICATE KEY UPDATE is_active=1, granted_at=NOW(), revoked_at=NULL, granted_by_admin_id=VALUES(granted_by_admin_id)
-    ')->execute([$body['staff_id'], $admin['id'], $body['permission']]);
 
-    auditLog(['userId' => $user['id'], 'action' => 'grant_permission', 'targetTable' => 'staff_permissions', 'newValue' => ['staff_id' => $body['staff_id'], 'permission' => $body['permission']], 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? null]);
-
-    jsonResponse(['success' => true, 'message' => "Permission '{$body['permission']}' granted."]);
-}
-
-//يحذف صلاحيه الموضف
-function adminRevokePermission(array $user): void {
-    $body = jsonBody();
-    $db   = getDB();
-
-    $db->prepare('UPDATE staff_permissions SET is_active=0, revoked_at=NOW() WHERE staff_id=? AND permission=?')
-       ->execute([$body['staff_id'], $body['permission']]);
-
-    auditLog(['userId' => $user['id'], 'action' => 'revoke_permission', 'targetTable' => 'staff_permissions', 'newValue' => ['staff_id' => $body['staff_id'], 'permission' => $body['permission']], 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? null]);
-
-    jsonResponse(['success' => true, 'message' => "Permission '{$body['permission']}' revoked."]);
+    jsonResponse([
+     'success' => true,
+     'message' => "Staff member deleted successfully."]);
 }
 
 //ادارة المخزون
@@ -187,24 +182,11 @@ function adminUpdateInventory(array $user, int $id): void {
 // عرض تقارير المخزون
 function adminGetReports(): void {
     $db     = getDB();
-    $where  = 'WHERE 1=1';
-    $params = [];
-
-    if (!empty($_GET['center_id'])) { $where .= ' AND ir.center_id = ?'; $params[] = $_GET['center_id']; }
-    if (!empty($_GET['period']))    { $where .= ' AND ir.period = ?';    $params[] = $_GET['period'];    }
-    if (!empty($_GET['status']))    { $where .= ' AND ir.status = ?';    $params[] = $_GET['status'];    }
-
     $stmt = $db->prepare("
-        SELECT ir.*, bc.name AS center_name, u.full_name AS created_by_name
-        FROM inventory_reports ir
-        JOIN blood_centers bc ON bc.id = ir.center_id
-        JOIN admin_profiles ap ON ap.id = ir.created_by_admin_id
-        JOIN users u ON u.id = ap.user_id
-        {$where}
-        ORDER BY ir.created_at DESC
+        SELECT * FROM blood_inventory 
     ");
-    $stmt->execute($params);
-    jsonResponse(['success' => true, 'reports' => $stmt->fetchAll()]);
+    $stmt->execute();
+    jsonResponse(['success' => true, 'stmt' => $stmt->fetchAll()]);
 }
 
 
@@ -212,10 +194,7 @@ function adminGetReports(): void {
 function adminGetBranches(): void {
     $db   = getDB();
     $rows = $db->query('
-        SELECT bc.*,
-            (SELECT COUNT(*) FROM staff_profiles WHERE center_id = bc.id) AS staff_count,
-            (SELECT COUNT(*) FROM donation_records WHERE center_id = bc.id AND status=\'completed\') AS total_donations
-        FROM blood_centers bc ORDER BY bc.name
+        SELECT * from hospitals
     ')->fetchAll();
     jsonResponse(['success' => true, 'branches' => $rows]);
 }

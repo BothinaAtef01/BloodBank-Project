@@ -1,5 +1,5 @@
 <?php
-// services/email.php — Mailtrap email sender
+
 
 function sendWelcomeCredentials(string $emailAddress, string $fullName, string $password, string $username): string {
     $host     = $_ENV['MAIL_HOST']     ?? 'sandbox.smtp.mailtrap.io';

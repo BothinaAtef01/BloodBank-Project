@@ -78,7 +78,7 @@ if (str_starts_with($uri, '/donor')) {
         $uri === '/donor/profile'          && $method === 'GET'   => donorGetProfile($user),
         $uri === '/donor/nearby-centers'   && $method === 'GET'   => donorGetNearbyCenters(),
         $uri === '/donor/donation-history' && $method === 'GET'   => donorGetDonationHistory($user),
-        $uri === '/donor/tips'             && $method === 'GET'   => donorGetTips(),
+       // $uri === '/donor/tips'             && $method === 'GET'   => donorGetTips(),
         $uri === '/donor/share-card'       && $method === 'GET'   => donorGetShareCard($user),
         default => jsonResponse(['success' => false, 'message' => "Route {$uri} not found."], 404),
     };

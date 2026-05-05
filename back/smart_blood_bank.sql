@@ -264,7 +264,7 @@ CREATE TABLE `admin` (
 --
 --Dumping data for table `admin`
 --
-
+INSERT INTO `admin`(`id`,`full_name`, `email`, `password`,`phone`)
 
 
 --

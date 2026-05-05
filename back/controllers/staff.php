@@ -192,7 +192,7 @@ function staffAddScreeningTest(array $user, int $donationId): void {
     $body = jsonBody();
 
     $db   = getDB();
-    $stmt = $db->prepare('SELECT id FROM staff_profiles WHERE user_id = ?');
+    $stmt = $db->prepare('SELECT id FROM staff WHERE user_id = ?');
     $stmt->execute([$user['id']]);
     $staff = $stmt->fetch();
 

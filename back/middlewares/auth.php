@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // بشوف لو المستخدم مسجل وصالح
 function authenticate(): array {
-    // بدل ما نقرأ Authorization header، نقرأ من السيشن مباشرة
+    //  نقرأ من السيشن مباشرة
     if (empty($_SESSION['user_id'])) {
         jsonResponse(['success' => false, 'message' => 'Not logged in.'], 401);
         exit;

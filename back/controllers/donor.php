@@ -2,22 +2,17 @@
 
 require_once __DIR__ . '/../config/connection.php';
 
-//يرجع بيانات المتبرع
+//يرجع بيانات المتبرع dashboard
 function donorGetProfile(array $user): void {
     $db   = getDB();
     $stmt = $db->prepare('
-        SELECT  email,              
-                username,           
-                password  ,         
+        SELECT  email,                      
                 full_name  ,        
-                date_of_birth ,     
-                gender   ,          
+                date_of_birth ,
+                phone_num,              
                 blood_type  ,       
-                weight_kg   ,       
-                national_id ,       
-                medical_conditions ,
         FROM donors
-        WHERE dp.user_id = ?
+        WHERE donor_unique_id = ?
     ');
     $stmt->execute([$user['id']]);
     $profile = $stmt->fetch();
@@ -90,19 +85,6 @@ function donorGetDonationHistory(array $user): void {
     ]);
 }
 
-// نصائح
-// function donorGetTips(): void {
-//     $type = $_GET['type'] ?? 'whole';
-//     $db   = getDB();
-//     $stmt = $db->prepare("
-//         SELECT id, category, title, content
-//         FROM post_donation_tips
-//         WHERE is_active = 1 AND (applies_to_type = 'all' OR applies_to_type = ?)
-//         ORDER BY sort_order ASC
-//     ");
-//     $stmt->execute([$type]);
-//     jsonResponse(['success' => true, 'tips' => $stmt->fetchAll()]);
-// }
 
 
 // share
@@ -112,7 +94,7 @@ function donorGetShareCard(array $user): void {
         SELECT full_name, blood_type,
             (SELECT COUNT(*) FROM donation_records WHERE donor_id = dp.id AND status=\'completed\') AS total_donations,
             (SELECT donation_date FROM donation_records WHERE donor_id = dp.id ORDER BY donation_date DESC LIMIT 1) AS last_donation
-        FROM donor_profiles dp
+        FROM donors dp
         JOIN users u ON u.id = dp.user_id
         WHERE dp.user_id = ?
     ');

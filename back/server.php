@@ -60,7 +60,6 @@ if (str_starts_with($uri, '/auth')) {
 
     match (true) {
         $uri === '/auth/login'          && $method === 'POST' => login(),
-        $uri === '/auth/validate-token' && $method === 'POST' => validateRegistrationToken(),
         $uri === '/auth/register-donor' && $method === 'POST' => registerDonor(),
         $uri === '/auth/me'             && $method === 'GET'  => getMe(authenticate()),
         $uri === '/auth/logout' && $method === 'POST' => logout(),
@@ -78,7 +77,6 @@ if (str_starts_with($uri, '/donor')) {
         $uri === '/donor/profile'          && $method === 'GET'   => donorGetProfile($user),
         $uri === '/donor/nearby-centers'   && $method === 'GET'   => donorGetNearbyCenters(),
         $uri === '/donor/donation-history' && $method === 'GET'   => donorGetDonationHistory($user),
-       // $uri === '/donor/tips'             && $method === 'GET'   => donorGetTips(),
         $uri === '/donor/share-card'       && $method === 'GET'   => donorGetShareCard($user),
         default => jsonResponse(['success' => false, 'message' => "Route {$uri} not found."], 404),
     };

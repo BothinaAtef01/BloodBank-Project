@@ -93,33 +93,13 @@ function logout(): void {
     jsonResponse(['success' => true, 'message' => 'Logged out successfully.']);
 }
 
-// التأكد من الكود اللي وصل المستخدم
-function validateRegistrationToken(): void {
-    $body       = jsonBody();
-    $token_code = strtoupper(trim($body['token_code'] ?? ''));
 
-    if (!$token_code) {
-        jsonResponse(['success' => false, 'message' => 'Token code is required.'], 400);
-    }
-
-    $db   = getDB();
-    $stmt = $db->prepare('SELECT * FROM donors WHERE donor_unique_id = ?');
-    $stmt->execute([$token_code]);
-    $donor = $stmt->fetch();
-
-    if (!$donor) {
-        jsonResponse(['success' => false, 'message' => 'Invalid registration code.'], 404);
-    }
-
-    jsonResponse(['success' => true, 'message' => 'Token is valid. Please complete your registration.']);
-    registerDonor();
-}
 
 // إنشاء حساب جديد عن طريق الكود
 function registerDonor(): void {
     $body = jsonBody();
 
-    $token_code         = strtoupper(trim($body['token_code']         ?? ''));
+     $token_code         = strtoupper(trim($body['token_code']         ?? ''));
     $email              = trim($body['email']              ?? '');
     $password           = trim($body['password']           ?? '');
     $full_name          = trim($body['full_name']           ?? '');
@@ -198,9 +178,49 @@ function registerDonor(): void {
     ], 201);
 }
  
+//يرجع بيانات المستخدم على حسب دوره
 function getMe(array $user): void {
     $db   = getDB();
-    $stmt = $db->prepare('SELECT id, email, full_name, role, phone, created_at FROM users WHERE id = ?');
+    $role = $user['role'];
+
+    switch ($role) {
+        case 'donor':
+            $stmt = $db->prepare(
+                'SELECT id, email, full_name, phone, blood_type, 
+                        gender, date_of_birth, created_at 
+                 FROM donors WHERE id = ?'
+            );
+            break;
+
+        case 'staff':
+            $stmt = $db->prepare(
+                'SELECT id, email, full_name, phone, created_at 
+                 FROM staff WHERE id = ?'
+            );
+            break;
+
+        case 'admin':
+            $stmt = $db->prepare(
+                'SELECT id, email, full_name, created_at 
+                 FROM admins WHERE id = ?'
+            );
+            break;
+
+        default:
+            jsonResponse(['success' => false, 'message' => 'Invalid role.'], 403);
+            return;
+    }
+
     $stmt->execute([$user['id']]);
-    jsonResponse(['success' => true, 'user' => $stmt->fetch()]);
+    $data = $stmt->fetch();
+
+    if (!$data) {
+        jsonResponse(['success' => false, 'message' => 'User not found.'], 404);
+        return;
+    }
+
+    
+    $data['role'] = $role;
+
+    jsonResponse(['success' => true, 'user' => $data]);
 }

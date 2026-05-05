@@ -1378,7 +1378,7 @@ function actionExport(type, id) {
   else if (type === 'branch')  exportBranchPDF(id);
 }
 
-function actionDelete(type, id) {
+function actionDelete(type, id) { 
   document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
   if (type === 'donation') {
     const idx = state.donations.findIndex(d => d.id === id);

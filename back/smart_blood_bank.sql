@@ -246,6 +246,28 @@ INSERT INTO `donations` (`donation_id`, `donor_unique_id`, `staff_id`, `hospital
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `managed_center_id` int(11) DEFAULT NULL, 
+  `phone` varchar(20) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `last_login` datetime DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+--Dumping data for table `admin`
+--
+
+
+
+--
 -- Table structure for table `donors`
 --
 
@@ -459,13 +481,27 @@ ALTER TABLE `donations`
   ADD KEY `staff_id` (`staff_id`),
   ADD KEY `hospital_id` (`hospital_id`);
 
+  --
+  --Indexes for table`admin`
+  --
+  ALTER TABLE `admin`
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE KEY `email` (`email`)
+    ADD CONSTRAINT `fk_admin_hospital` FOREIGN KEY (`managed_center_id`)
+    REFERENCES `hospitals` (`hospital_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+UPDATE `admin` 
+SET `email` = CONCAT(`username`, 'admin@lifeflow.com');
+
 --
 -- Indexes for table `donors`
 --
 ALTER TABLE `donors`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `donor_unique_id` (`donor_unique_id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD UNIQUE KEY `username` (`username`),
+  ADD `email` varchar(100) NOT NULL UNIQUE AFTER `user_name`;
 
 --
 -- Indexes for table `hospitals`
@@ -479,7 +515,11 @@ ALTER TABLE `hospitals`
 ALTER TABLE `staff`
   ADD PRIMARY KEY (`staff_id`),
   ADD UNIQUE KEY `username` (`username`),
-  ADD KEY `hospital_id` (`hospital_id`);
+  ADD KEY `hospital_id` (`hospital_id`),
+  ADD `email` varchar(100) NOT NULL UNIQUE AFTER `user_name`;
+
+  UPDATE `staff` 
+SET `email` = CONCAT(`username`, 'staff@lifeflow.com');
 
 --
 -- AUTO_INCREMENT for dumped tables

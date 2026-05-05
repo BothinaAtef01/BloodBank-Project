@@ -23,7 +23,7 @@
         <div class="orb orb-3"></div>
 
         <div class="panel-logo">
-          <div class="nav-logo" onclick="window.location.href='/index.html'" style="cursor: pointer;">
+          <div class="nav-logo" onclick="window.location.href='/index.php'" style="cursor: pointer;">
             <img src="/images/Logo.svg" alt="Droplink" style="height: 36px; width: auto;">
           </div>
         </div>

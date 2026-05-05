@@ -12,7 +12,7 @@
 
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
-      <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+      <div class="nav-logo" onclick="window.location.href='index.php'" style="cursor: pointer;">
         <img src="images/Logo.svg" alt="Droplink" style="height: 36px; width: auto;">
       </div>
       <ul class="nav-links">
@@ -22,8 +22,8 @@
         <li><a href="#faq">FAQ</a></li>
       </ul>
       <div class="nav-buttons">
-        <button class="nav-login" onclick="window.location.href='R&L/Login.html'">Login</button>
-        <button class="nav-cta" onclick="window.location.href='R&L/Register.html'">Register</button>
+        <button class="nav-login" onclick="window.location.href='R&L/Login.php'">Login</button>
+        <button class="nav-cta" onclick="window.location.href='R&L/Register.php'">Register</button>
       </div>
     </div>
   </nav>
@@ -40,7 +40,7 @@
         <p class="hero-sub">A unified platform connecting donors, hospitals, and blood banks — making critical blood supply management faster, smarter, and life-saving.</p>
         <div class="hero-actions">
           <button class="btn-primary" onclick="window.location.href='#map'">Find a Center →</button>
-          <button class="btn-outline" onclick="window.location.href='R&L/Login.html'">Learn More</button>
+          <button class="btn-outline" onclick="window.location.href='R&L/Login.php'">Learn More</button>
         </div>
       </div>
 

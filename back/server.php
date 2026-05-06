@@ -119,8 +119,6 @@ if (str_starts_with($uri, '/admin')) {
     if      ($uri === '/admin/dashboard'                                        && $method === 'GET')    adminGetDashboard($user);
     elseif  ($uri === '/admin/accounts'                                         && $method === 'GET')    adminGetAccounts();
     elseif  ($uri === '/admin/accounts/staff'                                   && $method === 'POST')   adminCreateStaffAccount($user);
-    elseif  ($uri === '/admin/permissions'                                      && $method === 'POST')   adminGrantPermission($user);
-    elseif  ($uri === '/admin/permissions'                                      && $method === 'DELETE') adminRevokePermission($user);
     elseif  ($uri === '/admin/inventory'                                        && $method === 'GET')    adminGetInventory();
     elseif  (preg_match('#^/admin/inventory/(\d+)$#', $uri, $m)                && $method === 'PATCH')  adminUpdateInventory($user, (int) $m[1]);
     elseif  ($uri === '/admin/reports'                                          && $method === 'GET')    adminGetReports();
